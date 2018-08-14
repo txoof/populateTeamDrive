@@ -2,7 +2,7 @@
 
 # coding: utf-8
 
-# In[24]:
+# In[36]:
 
 import logging
 import os
@@ -31,8 +31,8 @@ def getCredentials(storage_path = os.path.expanduser('./'),
     # see https://developers.google.com/drive/api/v3/about-auth for complete list of scopes
     scopes = 'https://www.googleapis.com/auth/drive' 
     
-    credential_dir = os.path.join(storage_path, 'credentials')
-    credential_file = os.path.join(credential_dir, 'credentials.json')
+    credential_dir = os.path.expanduser(storage_path)
+    credential_file = os.path.expanduser(os.path.join(credential_dir, 'credentials.json'))
     flags = tools.argparser.parse_args([])
 
     logger.debug('preparing google drive credentials')
