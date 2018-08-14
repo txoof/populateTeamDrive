@@ -2,70 +2,93 @@
 
 # coding: utf-8
 
-# In[4]:
+# In[1]:
 
 import ConfigParser
 import os
 import logging
 
 
-# In[5]:
+# In[16]:
 
 # borrowed from: https://www.blog.pythonlibrary.org/2013/10/25/python-101-an-intro-to-configparser/
 def create_config(path, configuration):
     '''
     create a configuration file at <path>
-    configuration in the format {'SectionName': {'key1':'value', 'key2':'value'}, 'OtherSection' {'opt1':'value', 'opt2':'Value'}}
+    Accepts:
+        configuration in the format {'SectionName': {'key1':'value', 'key2':'value'}, 'OtherSection' {'opt1':'value', 'opt2':'Value'}}
     
-    Note: SafeConfigParser treats everything as a string 
+    Note: SafeConfigParser treats all values as string 
     '''
     logger = logging.getLogger(__name__)
-    config = ConfigParser.SafeConfigParser()
-    for section, options in configuration.items():
-        config.add_section(section)
-        for key, value in options.items():
-            config.set(section, key, str(value))
-
+    cfgfile = os.path.expanduser(path)
+    cfgpath = os.path.dirname(os.path.expanduser(path))
+        
+    if not os.path.exists(cfgpath):
+        logger.info('creating configuration path: {path}')
+        try:
+            os.makedirs(path)
+        except Exception as e:
+            logger.error(e)
+  
     try:
-        with open(path, 'wb') as config_file:
-            config.write(config_file)
+        logger.info('writing configuration file: {}'.format(cfgfile))
+        with open(cfgfile, 'wb') as config_file:
+            configuration.write(config_file)
     except Exception as e:
-        logging.error(e)
+        logger.error(e)
 
 def get_config(path):
     '''
-    fetch configuration as a config object
+    fetch configuration as a configuration object
     '''
     logger = logging.getLogger(__name__)
-    if not os.path.exists(path):
-        logging.info('creating configuration path: {path}')
-        create_config(path)
-    
+    cfgfile = os.path.expanduser(path)
+    cfgpath = os.path.dirname(os.path.expanduser(path))
     config = ConfigParser.SafeConfigParser()
-    config.read(path)
-    return config
+
+    if not os.path.isfile(cfgfile):
+        logger.warn('no configuration file found at: {}'.format(cfgfile))
+        logger.info('returning empty config object')
+        return config
+    else:
+        logger.debug('reading configuration file at: {}'.format(cfgfile))
+        config.read(path)
+        return config
 
 
 
 def get_setting(path, section, setting):
     '''
-    get the requested setting
-    '''
-    config = get_config(path)
-    value = config.get(section, setting)
-    return value
-
-def update_setting(path, section, setting, value):
-    '''
-    update an option
+    get the requested from section
     '''
     logger = logging.getLogger(__name__)
-    config = get_config(config)
-    config.set(section, setting, value)
+    cfgfile = os.path.expanduser(path)
+    config = get_config(path)
     try:
-        with open(path, 'wb') as config_file:
-            config.write(config_file)
-    except Exception as e:
-        logging.error(e)
+        value = config.get(section, setting)
+        return(value)
+    except KeyError as e:
+        logging.warn('option not found: {}'.format(setting))
+        return('')
+        
+
+# def update_setting(path, section, setting, value):
+#     '''
+#     update an option
+#     '''
+#     logger = logging.getLogger(__name__)
+#     config = get_config(config)
+#     config.set(section, setting, value)
+#     try:
+#         with open(path, 'wb') as config_file:
+#             config.write(config_file)
+#     except Exception as e:
+#         logging.error(e)
     
+
+
+# In[17]:
+
+foo = get_setting('/Users/aaronciuffo/.config/portfolio_creator/portfolio_creator.ini', 'Main', 'foldername')
 
