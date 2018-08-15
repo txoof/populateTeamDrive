@@ -7,11 +7,11 @@ class Menu(object):
     '''Generate a simple menu of options'''
     
     def __init__(self, name = None, items=None):
-    	if not name: name = ''
-       	if not items: items = []
-	self.name = name
-       	self.items = items
-       	self.size = len(self.items)
+        if not name: name = ''
+        if not items: items = []
+        self.name = name
+        self.items = items
+        self.size = len(self.items)
 
 # this is broken because all new instances share the memory space for items
 # leading to every instance sharing the same list of items
