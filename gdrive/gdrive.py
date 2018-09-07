@@ -368,15 +368,3 @@ class googledrive():
 
 
 
-
-# In[180]:
-
-
-
-
-
-# In[166]:
-
-
-myDrive.getprops("0ACLfU8KeD_BHUk9PVA")
-
