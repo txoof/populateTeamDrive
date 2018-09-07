@@ -30,7 +30,7 @@ def create_config(path, configuration):
     if not os.path.exists(cfgpath):
         logger.info('creating configuration path: {path}')
         try:
-            os.makedirs(path)
+            os.makedirs(cfgpath)
         except Exception as e:
             logger.error(e)
   
