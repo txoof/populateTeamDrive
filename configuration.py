@@ -2,14 +2,17 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[21]:
 
-import ConfigParser
-import os
+
 import logging
+import ConfigParser
+from ConfigParser import NoOptionError
+import os
 
 
-# In[16]:
+# In[22]:
+
 
 # borrowed from: https://www.blog.pythonlibrary.org/2013/10/25/python-101-an-intro-to-configparser/
 def create_config(path, configuration):
@@ -68,7 +71,7 @@ def get_setting(path, section, setting):
     try:
         value = config.get(section, setting)
         return(value)
-    except KeyError as e:
+    except NoOptionError as e:
         logging.warn('option not found: {}'.format(setting))
         return('')
         
@@ -86,9 +89,4 @@ def get_setting(path, section, setting):
 #     except Exception as e:
 #         logging.error(e)
     
-
-
-# In[17]:
-
-foo = get_setting('/Users/aaronciuffo/.config/portfolio_creator/portfolio_creator.ini', 'Main', 'foldername')
 
