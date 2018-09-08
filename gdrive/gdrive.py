@@ -4,7 +4,6 @@
 
 # In[ ]:
 
-
 import logging
 import oauth2client
 import httplib2
@@ -15,13 +14,11 @@ from apiclient import errors
 
 # In[ ]:
 
-
 class GDriveError(Exception):
     pass
 
 
 # In[163]:
-
 
 # google documentation here:
 # https://developers.google.com/apis-explorer/#p/
@@ -314,7 +311,7 @@ class googledrive():
         apiString = 'fileId={}, fields="parents"'.format(fileId)
         logging.debug('api call: {}'.format(apiString))
         try:
-            parents = self.service.files().get(fileId=fileId, fields='parents').execute()
+            parents = self.service.files().get(supportsTeamDrives=True,fileId=fileId, fields='parents').execute()
             return(parents)
         except errors.HttpError as e:
             raise GDriveError(e)
@@ -358,7 +355,6 @@ class googledrive():
 
 
 # In[167]:
-
 
 # create an instance for testing
 # from auth import *
