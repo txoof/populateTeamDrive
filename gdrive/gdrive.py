@@ -2,7 +2,7 @@
 
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 import logging
 import oauth2client
@@ -12,13 +12,13 @@ from apiclient import discovery
 from apiclient import errors 
 
 
-# In[ ]:
+# In[2]:
 
 class GDriveError(Exception):
     pass
 
 
-# In[163]:
+# In[34]:
 
 # google documentation here:
 # https://developers.google.com/apis-explorer/#p/
@@ -29,16 +29,16 @@ class googledrive():
     Accepts:
     google drive v3 service object: (discover.build('drive', 'v3', credentials = credentials_object)
     
+    sets:
+        userinfo (dict) - (drive.about.get) all user info
+        teamdrives (list of dict) - (drive.teamdrives.list) all available team drives
+    
     '''
     def __init__(self, object):
         logger = logging.getLogger(__name__)
         if  not isinstance(object, oauth2client.client.OAuth2Credentials):
             logging.critical('invalid credential object: oauth2client.client.OAtuth2Credentials expected; {} received'.format(type(object)))
-#             print ('Error: googleapicleint.discovery.Resource object expected')
-#             print ('{:>5}create a resource object:'.format(''))
-#             print ('{:>10}credentials = getCredentials(credJSON = "cleint_secret.json")'.format(''))
-#             print ('{:>10}service = discovery.build("drive", "v3", credentials=credentials)'.format(''))
-#             print ('{:>10}myDrive = gDrive(service)'.format(''))
+
             return(None)
         # create the HTTP interface (not entirely sure how this works)
         self.http = object.authorize(httplib2.Http()) 
@@ -66,7 +66,9 @@ class googledrive():
         # https://developers.google.com/apis-explorer/#p/drive/v3/drive.files.create
         self.fields = ['id', 'parents', 'mimeType', 'webViewLink', 'size', 'createdTime', 'trashed', 'kind', 'name']
     
-#     types = property()
+        self.getuserinfo()
+        self.listTeamDrives()
+
     
     @property
     def types(self):
@@ -141,10 +143,13 @@ class googledrive():
         logging.debug('api call: files().create({})'.format(apiString))
         try:
             result = self.service.files().create(supportsTeamDrives=True, body=body, fields=','.join(fieldsProcessed)).execute()
-            return(result)
+            
         except errors.HttpError as e:
+            logging.error(e)
             raise GDriveError(e)
-            return(False)        
+            return(None)        
+        
+        return(result)
         
     def search(self, name = None, trashed = None, mimeType = False, fuzzy = False, date = None, dopperator = '>', 
                parents = None, orderBy = 'createdTime', teamdrive = None, quiet = True):
@@ -216,10 +221,13 @@ class googledrive():
                                                    supportsTeamDrives='true').execute()
             else:
                 result = self.service.files().list(q=' and '.join(qList), orderBy=orderBy).execute()
-            return(result)
+
         except errors.HttpError as e:
+            logging.error(e)
             raise GDriveError(e)
-            return(False)
+            return(None)
+
+        return(result)
 
     def ls(self, *args, **kwargs):
         '''
@@ -238,9 +246,13 @@ class googledrive():
             result = self.search(*args, **kwargs)
             for eachFile in result.get('files', []):
                 print('name: {f[name]}, ID:{f[id]}, mimeType:{f[mimeType]}'.format(f=eachFile))
-            return(result)
+            
         except GDriveError as e:
+            logging.error(e)
             raise GDriveError(e)
+            return(None)
+        
+        return(result)
             
     
     
@@ -282,10 +294,13 @@ class googledrive():
         logging.debug('files().get({})'.format(apiString))
         try:
             result = self.service.files().get(supportsTeamDrives=True, fileId=fileId, fields=','.join(fieldsProcessed)).execute()
-            return(result)
+
         except errors.HttpError as e:
+            logging.error(e)
             raise GDriveError(e)
-            return(False)
+            return(None)
+        
+        return(result)
         
     def getpermissions(self, fileID):
         """
@@ -294,10 +309,12 @@ class googledrive():
         try:
             permissions = self.service.permissions().list(fileId=fileID, 
                                                           supportsTeamDrives=True).execute()
-            return permissions
-        except errors.HttpError, error:
-              print 'An error occurred: %s' % error
-        return None
+            
+        except (errors.HttpError, error) as e:
+            logging.error(e)
+            return(None)
+        
+        return(permissions)
         
     def parents(self, fileId):
         # need to update to work with TeamDrive
@@ -312,27 +329,26 @@ class googledrive():
         logging.debug('api call: {}'.format(apiString))
         try:
             parents = self.service.files().get(supportsTeamDrives=True,fileId=fileId, fields='parents').execute()
-            return(parents)
-        except errors.HttpError as e:
-            raise GDriveError(e)
-            return(None)
-    
-    def rm(self):
-        pass
-    
-    def getuserid(self):
-        '''
-        get the current user's ID
-        '''
-        # more info here: https://developers.google.com/apis-explorer/#search/drive.about.get/m/drive/v3/drive.about.get?fields=user&_h=1&
-        try:
-            uid = self.service.about().get(fields="user/permissionId").execute()
-            #return(uid)
-            return(uid['user']['permissionId'])
         except errors.HttpError as e:
             raise GDriveError(e)
             return(None)
         
+        return(parents)
+
+    
+    def rm(self):
+        pass
+    
+    def getuserinfo(self):
+        try:
+            user = self.service.about().get(fields='user').execute()
+        except errors.HttpError as e:
+            logging.error(e)
+            raise GDriveError(e)
+            return(none)
+        
+        self.userinfo = user['user']
+        return(user['user'])
     
     def listTeamDrives(self):
         '''
@@ -348,13 +364,16 @@ class googledrive():
         
         try:
             result = self.service.teamdrives().list(fields=','.join(fields)).execute()
-            return(result['teamDrives'])
         except errors.HttpError as e:
+            logging.error(e)
             raise GDriveError(e)
-            return(False)
+            return(None)
+        
+        self.teamdrives = result['teamDrives']
+        return(result['teamDrives'])
 
 
-# In[167]:
+# In[36]:
 
 # create an instance for testing
 # from auth import *
