@@ -7,6 +7,7 @@
 import logging
 import oauth2client
 import httplib2
+import re
 # from gdrive.auth import getCredentials
 from apiclient import discovery
 from apiclient import errors 
@@ -18,7 +19,7 @@ class GDriveError(Exception):
     pass
 
 
-# In[2]:
+# In[3]:
 
 # google documentation here:
 # https://developers.google.com/apis-explorer/#p/
@@ -35,9 +36,9 @@ class googledrive():
     
     '''
     def __init__(self, object):
-        logger = logging.getLogger(__name__)
+        self.logger =logging.getLogger(__name__)
         if  not isinstance(object, oauth2client.client.OAuth2Credentials):
-            logging.critical('invalid credential object: oauth2client.client.OAtuth2Credentials expected; {} received'.format(type(object)))
+            self.logger.critical('invalid credential object: oauth2client.client.OAtuth2Credentials expected; {} received'.format(type(object)))
 
             return(None)
         # create the HTTP interface (not entirely sure how this works)
@@ -122,12 +123,12 @@ class googledrive():
             fieldsProcessed = fields.split(',')
             
         if len(fieldsUnknown) > 0:
-            logging.warn('unrecognized fields: {}'.format(fieldsUnknown))
+            self.logger.warn('unrecognized fields: {}'.format(fieldsUnknown))
         
         
         body={}
         if name is None:
-            logging.error('expected a folder or file name')
+            self.logger.error('expected a folder or file name')
             return(False)
         else:
             body['name'] = name
@@ -141,12 +142,12 @@ class googledrive():
             body['parents'] = [parents]
         
         apiString = 'body={}, fields={}'.format(body, ','.join(fieldsProcessed))
-        logging.debug('api call: files().create({})'.format(apiString))
+        self.logger.debug('api call: files().create({})'.format(apiString))
         try:
             result = self.service.files().create(supportsTeamDrives=True, body=body, fields=','.join(fieldsProcessed)).execute()
             
         except errors.HttpError as e:
-            logging.error(e)
+            self.logger.error(e)
             raise GDriveError(e)
             return(None)        
         
@@ -209,7 +210,7 @@ class googledrive():
             print(' and '.join(qList))
         
         apiString = 'q={}, orderBy={})'.format(' and '.join(qList), orderBy)
-        logging.debug('apicall: files().list({})'.format(apiString))
+        self.logger.debug('apicall: files().list({})'.format(apiString))
         try:
             # build a query with "and" statements
 
@@ -224,7 +225,7 @@ class googledrive():
                 result = self.service.files().list(q=' and '.join(qList), orderBy=orderBy).execute()
 
         except errors.HttpError as e:
-            logging.error(e)
+            self.logger.error(e)
             raise GDriveError(e)
             return(None)
 
@@ -249,7 +250,7 @@ class googledrive():
                 print('name: {f[name]}, ID:{f[id]}, mimeType:{f[mimeType]}'.format(f=eachFile))
             
         except GDriveError as e:
-            logging.error(e)
+            self.logger.error(e)
             raise GDriveError(e)
             return(None)
         
@@ -281,24 +282,27 @@ class googledrive():
         fieldsUnknown = []
 
         if sanitize:
+            myFields = fields.replace(' ','')
+            fieldList = re.split(',\s*(?![^()]*\))', myFields)
             # remove whitespace and unknown options
-            for each in fields.replace(' ','').split(','):
-                if each in fieldsExpected:
+            for each in fieldList:
+                if any(each.startswith(i) for i in self.fields):
+#                 if each in fieldsExpected:
                     fieldsProcessed.append(each)
                 else:
                     fieldsUnknown.append(each)
         else:
             fieldsProcessed = fields.split(',')
         if len(fieldsUnknown) > 0:
-            print ('unrecognized fields: {}'.format(fieldsUnknown))
+            self.logger.error('unrecognized fields: {}'.format(fieldsUnknown))
         
         apiString = 'fileId={}, fields={}'.format(fileId, ','.join(fieldsProcessed))
-        logging.debug('files().get({})'.format(apiString))
+        self.logger.debug('files().get({})'.format(apiString))
         try:
             result = self.service.files().get(supportsTeamDrives=True, fileId=fileId, fields=','.join(fieldsProcessed)).execute()
 
         except errors.HttpError as e:
-            logging.error(e)
+            self.logger.error(e)
             raise GDriveError(e)
             return(None)
         
@@ -313,7 +317,7 @@ class googledrive():
                                                           supportsTeamDrives=True).execute()
             
         except (errors.HttpError, error) as e:
-            logging.error(e)
+            self.logger.error(e)
             return(None)
         
         return(permissions)
@@ -328,7 +332,7 @@ class googledrive():
         raises GDriveError
         """
         apiString = 'fileId={}, fields="parents"'.format(fileId)
-        logging.debug('api call: {}'.format(apiString))
+        self.logger.debug('api call: {}'.format(apiString))
         try:
             parents = self.service.files().get(supportsTeamDrives=True,fileId=fileId, fields='parents').execute()
         except errors.HttpError as e:
@@ -345,7 +349,7 @@ class googledrive():
         try:
             user = self.service.about().get(fields='user').execute()
         except errors.HttpError as e:
-            logging.error(e)
+            self.logger.error(e)
             raise GDriveError(e)
             return(none)
         
@@ -367,7 +371,7 @@ class googledrive():
         try:
             result = self.service.teamdrives().list(fields=','.join(fields)).execute()
         except errors.HttpError as e:
-            logging.error(e)
+            self.logger.error(e)
             raise GDriveError(e)
             return(None)
         
@@ -375,18 +379,13 @@ class googledrive():
         return(result['teamDrives'])
 
 
-# In[4]:
+# In[6]:
 
-# create an instance for testing
-from auth import *
-credential_store = "/tmp/"
-credentials = getCredentials(credential_store)
-myDrive = googledrive(credentials)
-
-
-
-
-# In[ ]:
+# # create an instance for testing
+# from auth import *
+# credential_store = "/tmp/"
+# credentials = getCredentials(credential_store)
+# myDrive = googledrive(credentials)
 
 
 
