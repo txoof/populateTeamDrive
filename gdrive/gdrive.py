@@ -18,7 +18,7 @@ class GDriveError(Exception):
     pass
 
 
-# In[34]:
+# In[2]:
 
 # google documentation here:
 # https://developers.google.com/apis-explorer/#p/
@@ -64,7 +64,8 @@ class googledrive():
         
         # fields to include in partial responses
         # https://developers.google.com/apis-explorer/#p/drive/v3/drive.files.create
-        self.fields = ['id', 'parents', 'mimeType', 'webViewLink', 'size', 'createdTime', 'trashed', 'kind', 'name']
+        self.fields = ['id', 'parents', 'mimeType', 'webViewLink', 'size', 'createdTime', 'trashed', 'kind', 'name',
+                      'capabilities', 'owners', 'permissions']
     
         self.getuserinfo()
         self.listTeamDrives()
@@ -265,7 +266,8 @@ class googledrive():
         args:
             fileId (string): google drive file ID
             fields (comma separated string): properties to query and return any of the following:
-                'parents', 'mimeType', 'webViewLink', 'size', 'createdTime', 'trashed'
+                'parents', 'mimeType', 'webViewLink', 'size', 'createdTime', 'trashed', 'capabilities'
+                see: https://developers.google.com/apis-explorer/#p/drive/v3/drive.files.get
             sanitize (bool): remove any field options that are not in the above list - false to allow anything
             
         returns:
@@ -373,13 +375,18 @@ class googledrive():
         return(result['teamDrives'])
 
 
-# In[36]:
+# In[4]:
 
 # create an instance for testing
-# from auth import *
-# credential_store = "/tmp/"
-# credentials = getCredentials(credential_store)
-# myDrive = googledrive(credentials)
+from auth import *
+credential_store = "/tmp/"
+credentials = getCredentials(credential_store)
+myDrive = googledrive(credentials)
+
+
+
+
+# In[ ]:
 
 
 
