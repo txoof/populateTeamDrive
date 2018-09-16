@@ -19,7 +19,7 @@ class GDriveError(Exception):
     pass
 
 
-# In[3]:
+# In[14]:
 
 # google documentation here:
 # https://developers.google.com/apis-explorer/#p/
@@ -152,11 +152,12 @@ class googledrive():
             return(None)        
         
         return(result)
+                
         
-    def search(self, name = None, trashed = None, mimeType = False, fuzzy = False, date = None, dopperator = '>', 
-               parents = None, orderBy = 'createdTime', teamdrive = None, quiet = True):
+    def search(self, name = None, trashed = None, mimeType = False, fuzzy = False, modifiedTime = None, dopperator = '>', 
+               parents = None, orderBy = 'createdTime', teamdrive = None, quiet=True ):
         '''
-        search for an item by name and other properties in google drive
+        search for an item by name and other properties in google drive using drive.files.list
         
         args:
             name (string): item name in google drive - required
@@ -171,11 +172,10 @@ class googledrive():
                         'modifiedTime', 'name', 'quotaBytesUsed', 
                         'recency', 'sharedWithMeTime', 'starred', 
                         'viewedByMeTime'
-            fields (comma separated string): properties to query and return any of the following:
-                'parents', 'mimeType', 'webViewLink', 
-                'size', 'createdTime', 'trashed'
-                'id'
-            sanitize (bool): remove any field options that are not in the above list - false to allow anything
+            fields (comma separated string): properties to query and return any of the fields listed in 
+                self.fields
+                see https://developers.google.com/apis-explorer/#p/drive/v3/drive.files.list
+            sanitize (bool): remove any field options that are not in the fields list - false to allow anything
             teamdrive (string): Team Drive ID string - when included only the specified Team Drive is searched
             quiet (bool): false prints all the results
                         
@@ -184,12 +184,15 @@ class googledrive():
         returns:
             list of file dict
         '''
-        features = ['name', 'trashed', 'mimeType', 'date', 'parents']
+        # see https://developers.google.com/drive/api/v3/search-parameters for full list
+        qFeatures = ['name', 'trashed', 'mimeType', 'modifiedTime', 'parents']
+        
+        # formatting structure for each query feature 
         build = {'name' : 'name {} "{}"'.format(('contains' if fuzzy else '='), name),
                  'trashed' : 'trashed={}'. format(trashed),
                  'mimeType' : 'mimeType="{}"'.format(self.mimeTypes[mimeType] if mimeType in self.mimeTypes else ''),
                  'parents': '"{}" in parents'.format(parents),
-                 'date': 'modifiedTime{}"{}"'.format(dopperator, date)}
+                 'modifiedTime': 'modifiedTime{}"{}"'.format(dopperator, modifiedTime)}
 
 
     
@@ -199,18 +202,20 @@ class googledrive():
             # set to true as the variable is now in use, but it's value has been set above
             trashed = True
         
+        # list of query opperations
         qList = []
 
         # evaluate feature options; if they are != None/False, use them in building query
-        for each in features:
+        for each in qFeatures:
             if eval(each):
                 qList.append(build[each])
-                
-        if not quiet:
-            print(' and '.join(qList))
         
         apiString = 'q={}, orderBy={})'.format(' and '.join(qList), orderBy)
         self.logger.debug('apicall: files().list({})'.format(apiString))
+        
+        if not quiet:
+            print apiString
+        
         try:
             # build a query with "and" statements
 
@@ -266,9 +271,8 @@ class googledrive():
         
         args:
             fileId (string): google drive file ID
-            fields (comma separated string): properties to query and return any of the following:
-                'parents', 'mimeType', 'webViewLink', 'size', 'createdTime', 'trashed', 'capabilities'
-                see: https://developers.google.com/apis-explorer/#p/drive/v3/drive.files.get
+            fields (comma separated string): properties to query and return any of the fields
+                listed in self.fields
             sanitize (bool): remove any field options that are not in the above list - false to allow anything
             
         returns:
@@ -379,13 +383,12 @@ class googledrive():
         return(result['teamDrives'])
 
 
-# In[6]:
+
+# In[15]:
 
 # # create an instance for testing
 # from auth import *
 # credential_store = "/tmp/"
 # credentials = getCredentials(credential_store)
 # myDrive = googledrive(credentials)
-
-
 
