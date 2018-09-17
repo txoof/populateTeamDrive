@@ -4,6 +4,7 @@
 
 # In[1]:
 
+
 import logging
 import oauth2client
 import httplib2
@@ -15,11 +16,13 @@ from apiclient import errors
 
 # In[2]:
 
+
 class GDriveError(Exception):
     pass
 
 
-# In[14]:
+# In[41]:
+
 
 # google documentation here:
 # https://developers.google.com/apis-explorer/#p/
@@ -66,7 +69,7 @@ class googledrive():
         # fields to include in partial responses
         # https://developers.google.com/apis-explorer/#p/drive/v3/drive.files.create
         self.fields = ['id', 'parents', 'mimeType', 'webViewLink', 'size', 'createdTime', 'trashed', 'kind', 'name',
-                      'capabilities', 'owners', 'permissions']
+                      'capabilities', 'owners', 'permissions', 'files']
     
         self.getuserinfo()
         self.listTeamDrives()
@@ -89,7 +92,27 @@ class googledrive():
 #         return('"'+str(string)+'"')
     
 
-    
+    def _sanitizeFields(self, fields):
+        '''
+        Private method for stripping whitespace and unknown field opperators
+        accepts:
+            fields (string)
+        
+        returns:
+            sanitizedFields (string)'''
+        fieldsProcessed=[]
+        fieldsUnknown=[]
+        myFields = fields.replace(' ','')
+        fieldList = re.split(',\s*(?![^()]*\))', myFields)
+        # remove whitespace and unknown options
+        for each in fieldList:
+            if any(each.startswith(i) for i in self.fields):
+                fieldsProcessed.append(each)
+            else:
+                fieldsUnknown.append(each)
+        
+        return(fieldsProcessed, fieldsUnknown)
+
     def add(self, name = None, mimeType = False, parents = None, 
             fields = 'webViewLink, mimeType, id', sanitize = True):
         '''
@@ -100,25 +123,26 @@ class googledrive():
             name (string): human readable name
             mimeType (string): mimeType (see self.mimeTypes for a complete list)
             parents (list): list of parent folders
-            fields (comma separated string): properties to query and return any of the following:
-                'parents', 'mimeType', 'webViewLink', 
-                'size', 'createdTime', 'trashed'
-                'id'
+            fields (comma separated string): properties to query and return any of the fields listed in 
+                self.fields
+                see https://developers.google.com/apis-explorer/#p/drive/v3/drive.files.list
             sanitize (bool): remove any field options that are not in the above list - false to allow anything
             
         '''
 
-        fieldsExpected = self.fields
+#         fieldsExpected = self.fields
         fieldsProcessed = []
         fieldsUnknown = []
+        body={}
         
         if sanitize:
-            # remove whitespace and unknown options
-            for each in fields.replace(' ','').split(','):
-                if each in fieldsExpected:
-                    fieldsProcessed.append(each)
-                else:
-                    fieldsUnknown.append(each)
+#             # remove whitespace and unknown options
+#             for each in fields.replace(' ','').split(','):
+#                 if each in fieldsExpected:
+#                     fieldsProcessed.append(each)
+#                 else:
+#                     fieldsUnknown.append(each)
+            fieldsProcessed, fieldsUnknown = self._sanitizeFields(fields)
         else:
             fieldsProcessed = fields.split(',')
             
@@ -126,7 +150,7 @@ class googledrive():
             self.logger.warn('unrecognized fields: {}'.format(fieldsUnknown))
         
         
-        body={}
+        
         if name is None:
             self.logger.error('expected a folder or file name')
             return(False)
@@ -134,15 +158,20 @@ class googledrive():
             body['name'] = name
         
         if mimeType in self.mimeTypes:
+            self.logger.debug('set mimeType: {}'.format(mimeType))
             body['mimeType'] = self.mimeTypes[mimeType]
+        else:
+            self.logger.warn('ignoring unknown mimeType: {}'.format(mimeType))
         
         if isinstance(parents, list):
             body['parents'] = parents
         elif parents:
             body['parents'] = [parents]
-        
-        apiString = 'body={}, fields={}'.format(body, ','.join(fieldsProcessed))
-        self.logger.debug('api call: files().create({})'.format(apiString))
+        self.logger.debug('set parent to: {}'.format(parents))
+        self.logger.debug('fields: {}'.format(fieldsProcessed))
+        self.logger.debug('body: {}'.format(body))
+#         apiString = 'body={}, fields={}'.format(body, ','.join(fieldsProcessed))
+#         self.logger.debug('api call: files().create({})'.format(apiString))
         try:
             result = self.service.files().create(supportsTeamDrives=True, body=body, fields=','.join(fieldsProcessed)).execute()
             
@@ -285,16 +314,17 @@ class googledrive():
         fieldsProcessed = []
         fieldsUnknown = []
 
+        # move this into a private method 
         if sanitize:
-            myFields = fields.replace(' ','')
-            fieldList = re.split(',\s*(?![^()]*\))', myFields)
-            # remove whitespace and unknown options
-            for each in fieldList:
-                if any(each.startswith(i) for i in self.fields):
-#                 if each in fieldsExpected:
-                    fieldsProcessed.append(each)
-                else:
-                    fieldsUnknown.append(each)
+#             myFields = fields.replace(' ','')
+#             fieldList = re.split(',\s*(?![^()]*\))', myFields)
+#             # remove whitespace and unknown options
+#             for each in fieldList:
+#                 if any(each.startswith(i) for i in self.fields):
+#                     fieldsProcessed.append(each)
+#                 else:
+#                     fieldsUnknown.append(each)
+            fieldsProcessed, fieldsUnknown = self._sanitizeFields(fields)
         else:
             fieldsProcessed = fields.split(',')
         if len(fieldsUnknown) > 0:
@@ -384,10 +414,13 @@ class googledrive():
 
 
 
-# In[15]:
+# In[42]:
 
-# # create an instance for testing
+
+# create an instance for testing
 # from auth import *
+# logger = logging.getLogger(__name__)
+# logging.getLogger().setLevel(logging.DEBUG)
 # credential_store = "/tmp/"
 # credentials = getCredentials(credential_store)
 # myDrive = googledrive(credentials)
