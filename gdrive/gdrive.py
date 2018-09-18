@@ -2,7 +2,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 import logging
@@ -14,14 +14,14 @@ from apiclient import discovery
 from apiclient import errors 
 
 
-# In[2]:
+# In[ ]:
 
 
 class GDriveError(Exception):
     pass
 
 
-# In[41]:
+# In[ ]:
 
 
 # google documentation here:
@@ -183,8 +183,9 @@ class googledrive():
         return(result)
                 
         
-    def search(self, name = None, trashed = None, mimeType = False, fuzzy = False, modifiedTime = None, dopperator = '>', 
-               parents = None, orderBy = 'createdTime', teamdrive = None, quiet=True ):
+    def search(self, name=None, trashed=None, mimeType=False, fuzzy=False, modifiedTime=None, 
+               dopperator = '>', parents=None, fields=None, orderBy='createdTime', 
+               teamdrive=None, sanitize=True, quiet=True ):
         '''
         search for an item by name and other properties in google drive using drive.files.list
         
@@ -201,7 +202,7 @@ class googledrive():
                         'modifiedTime', 'name', 'quotaBytesUsed', 
                         'recency', 'sharedWithMeTime', 'starred', 
                         'viewedByMeTime'
-            fields (comma separated string): properties to query and return any of the fields listed in 
+            fields (comma separated string): properties to query and return any of the files(fields) listed in 
                 self.fields
                 see https://developers.google.com/apis-explorer/#p/drive/v3/drive.files.list
             sanitize (bool): remove any field options that are not in the fields list - false to allow anything
@@ -224,8 +225,15 @@ class googledrive():
                  'modifiedTime': 'modifiedTime{}"{}"'.format(dopperator, modifiedTime)}
 
 
-    
+        if sanitize:
+            fieldsProcessed, fieldsUnknown = self._sanitizeFields(fields)
+            # only supporting the files() fields here
+            fieldsProcessed = 'files({})'.format(','.join(fieldsProcessed))
+        else:
+            fieldsProcessed = fields.split(',')
             
+        if len(fieldsUnknown) > 0:
+            self.logger.warn('unrecognized fields: {}'.format(fieldsUnknown))
         # provides for setting trashed to True/False if the input is not None
         if not isinstance(trashed, type(None)):
             # set to true as the variable is now in use, but it's value has been set above
@@ -250,11 +258,12 @@ class googledrive():
 
             if teamdrive:
                 result = self.service.files().list(q=' and '.join(qList), 
-                                                   orderBy=orderBy, 
                                                    corpora='teamDrive',
                                                    includeTeamDriveItems='true',
+                                                   orderBy=orderBy,                                             
                                                    teamDriveId=teamdrive, 
-                                                   supportsTeamDrives='true').execute()
+                                                   supportsTeamDrives='true',
+                                                   fields=fieldsProcessed).execute()
             else:
                 result = self.service.files().list(q=' and '.join(qList), orderBy=orderBy).execute()
 
@@ -414,10 +423,10 @@ class googledrive():
 
 
 
-# In[42]:
+# In[ ]:
 
 
-# create an instance for testing
+# # create an instance for testing
 # from auth import *
 # logger = logging.getLogger(__name__)
 # logging.getLogger().setLevel(logging.DEBUG)
