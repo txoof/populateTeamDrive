@@ -2,26 +2,68 @@
 
 # coding: utf-8
 
-# In[ ]:
+# In[39]:
 
 
 import logging
 import oauth2client
 import httplib2
 import re
+import time
+from ssl import SSLError
 # from gdrive.auth import getCredentials
 from apiclient import discovery
 from apiclient import errors 
 
 
-# In[ ]:
+# In[17]:
+
+
+help(SSLError)
+
+
+# In[40]:
 
 
 class GDriveError(Exception):
     pass
 
+class NetworkError(RuntimeError):
+    pass
 
-# In[ ]:
+
+# In[46]:
+
+
+def retryer(max_retries=10, timeout=5):
+    '''
+    Retry on specific network related errors with timeout
+    https://pragmaticcoders.com/blog/retrying-exceptions-handling-internet-connection-problems/
+    '''
+    logger =logging.getLogger(__name__)
+    logger.debug('max_retries: {}, timeout: {}'.format(max_retries, timeout))
+    def wraps(func):
+        network_exceptions= (
+            errors.HttpError,
+            SSLError
+            )
+        def inner(*args, **kwargs):
+            for i in range(max_retries):
+                logger.info('attempt: {}'.format(i))
+                try:
+                    result = func(*args, **kwargs)
+                except network_exceptions:
+                    time.sleep(timeout)
+                    continue
+                else:
+                    return result
+            else:
+                raise NetworkError
+        return inner
+    return wraps
+
+
+# In[66]:
 
 
 # google documentation here:
@@ -69,7 +111,7 @@ class googledrive():
         # fields to include in partial responses
         # https://developers.google.com/apis-explorer/#p/drive/v3/drive.files.create
         self.fields = ['id', 'parents', 'mimeType', 'webViewLink', 'size', 'createdTime', 'trashed', 'kind', 'name',
-                      'capabilities', 'owners', 'permissions', 'files']
+                      'capabilities', 'owners', 'permissions', 'files', ''] # '' is placeholder for none
     
         self.getuserinfo()
         self.listTeamDrives()
@@ -113,6 +155,7 @@ class googledrive():
         
         return(fieldsProcessed, fieldsUnknown)
 
+#     @retryer(max_retries=5)
     def add(self, name = None, mimeType = False, parents = None, 
             fields = 'webViewLink, mimeType, id', sanitize = True):
         '''
@@ -182,9 +225,9 @@ class googledrive():
         
         return(result)
                 
-        
+    @retryer(max_retries=5)
     def search(self, name=None, trashed=None, mimeType=False, fuzzy=False, modifiedTime=None, 
-               dopperator = '>', parents=None, fields=None, orderBy='createdTime', 
+               dopperator = '>', parents=None, fields='', orderBy='createdTime', 
                teamdrive=None, sanitize=True, quiet=True ):
         '''
         search for an item by name and other properties in google drive using drive.files.list
@@ -273,7 +316,8 @@ class googledrive():
             return(None)
 
         return(result)
-
+    
+    @retryer(max_retries=5)
     def ls(self, *args, **kwargs):
         '''
         List files in google drive using any of the following properties:
@@ -300,7 +344,7 @@ class googledrive():
         return(result)
             
     
-    
+    @retryer(max_retries=5)
     def getprops(self, fileId = None, fields = 'parents, mimeType, webViewLink', sanitize=True):
         '''
         get a file or folder's properties based on google drive fileId
@@ -350,7 +394,8 @@ class googledrive():
             return(None)
         
         return(result)
-        
+    
+    @retryer(max_retries=5)
     def getpermissions(self, fileID):
         """
         get a file, folder or Team Drive's permissions
@@ -364,7 +409,8 @@ class googledrive():
             return(None)
         
         return(permissions)
-        
+    
+    @retryer(max_retries=5)
     def parents(self, fileId):
         # need to update to work with TeamDrive
         """get a file's parents.
@@ -388,6 +434,7 @@ class googledrive():
     def rm(self):
         pass
     
+    @retryer(max_retries=5)
     def getuserinfo(self):
         try:
             user = self.service.about().get(fields='user').execute()
@@ -399,6 +446,7 @@ class googledrive():
         self.userinfo = user['user']
         return(user['user'])
     
+    @retryer(max_retries=5)
     def listTeamDrives(self):
         '''
         List first page of team drives available to the user 
@@ -423,14 +471,24 @@ class googledrive():
 
 
 
-# In[ ]:
+# In[56]:
 
 
-# # create an instance for testing
-# from auth import *
-# logger = logging.getLogger(__name__)
-# logging.getLogger().setLevel(logging.DEBUG)
-# credential_store = "/tmp/"
-# credentials = getCredentials(credential_store)
-# myDrive = googledrive(credentials)
+# create an instance for testing
+from auth import *
+logger = logging.getLogger(__name__)
+logging.getLogger().setLevel(logging.DEBUG)
+credential_store = "/tmp/"
+credentials = getCredentials(credential_store)
+myDrive = googledrive(credentials)
+
+
+# In[63]:
+
+
+# myDrive.search(name='Misc', fuzzy=True)
+# myDrive.getuserinfo()
+# myDrive.getprops(fileId='1-D7UNBes_skfkQ6oBettiBICiBcZmbvn')
+# myDrive.add(name='FooBar', parents='1-D7UNBes_skfkQ6oBettiBICiBcZmbvn', mimeType='folder')
+# myDrive.parents(fileId='1-D7UNBes_skfkQ6oBettiBICiBcZmbvn')
 
