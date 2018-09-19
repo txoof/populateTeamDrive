@@ -2,7 +2,7 @@
 
 # coding: utf-8
 
-# In[39]:
+# In[ ]:
 
 
 import logging
@@ -16,13 +16,7 @@ from apiclient import discovery
 from apiclient import errors 
 
 
-# In[17]:
-
-
-help(SSLError)
-
-
-# In[40]:
+# In[ ]:
 
 
 class GDriveError(Exception):
@@ -32,7 +26,7 @@ class NetworkError(RuntimeError):
     pass
 
 
-# In[46]:
+# In[ ]:
 
 
 def retryer(max_retries=10, timeout=5):
@@ -40,7 +34,7 @@ def retryer(max_retries=10, timeout=5):
     Retry on specific network related errors with timeout
     https://pragmaticcoders.com/blog/retrying-exceptions-handling-internet-connection-problems/
     '''
-    logger =logging.getLogger(__name__)
+    logger = logging.getLogger(__name__)
     logger.debug('max_retries: {}, timeout: {}'.format(max_retries, timeout))
     def wraps(func):
         network_exceptions= (
@@ -63,7 +57,7 @@ def retryer(max_retries=10, timeout=5):
     return wraps
 
 
-# In[66]:
+# In[ ]:
 
 
 # google documentation here:
@@ -155,7 +149,7 @@ class googledrive():
         
         return(fieldsProcessed, fieldsUnknown)
 
-#     @retryer(max_retries=5)
+    @retryer(max_retries=5)
     def add(self, name = None, mimeType = False, parents = None, 
             fields = 'webViewLink, mimeType, id', sanitize = True):
         '''
@@ -471,24 +465,14 @@ class googledrive():
 
 
 
-# In[56]:
+# In[ ]:
 
 
-# create an instance for testing
-from auth import *
-logger = logging.getLogger(__name__)
-logging.getLogger().setLevel(logging.DEBUG)
-credential_store = "/tmp/"
-credentials = getCredentials(credential_store)
-myDrive = googledrive(credentials)
-
-
-# In[63]:
-
-
-# myDrive.search(name='Misc', fuzzy=True)
-# myDrive.getuserinfo()
-# myDrive.getprops(fileId='1-D7UNBes_skfkQ6oBettiBICiBcZmbvn')
-# myDrive.add(name='FooBar', parents='1-D7UNBes_skfkQ6oBettiBICiBcZmbvn', mimeType='folder')
-# myDrive.parents(fileId='1-D7UNBes_skfkQ6oBettiBICiBcZmbvn')
+# # create an instance for testing
+# from auth import *
+# logger = logging.getLogger(__name__)
+# logging.getLogger().setLevel(logging.DEBUG)
+# credential_store = "/tmp/"
+# credentials = getCredentials(credential_store)
+# myDrive = googledrive(credentials)
 
