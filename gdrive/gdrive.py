@@ -2,7 +2,7 @@
 
 # coding: utf-8
 
-# In[ ]:
+# In[3]:
 
 
 import logging
@@ -16,7 +16,7 @@ from apiclient import discovery
 from apiclient import errors 
 
 
-# In[ ]:
+# In[4]:
 
 
 class GDriveError(Exception):
@@ -26,7 +26,7 @@ class NetworkError(RuntimeError):
     pass
 
 
-# In[ ]:
+# In[5]:
 
 
 def retryer(max_retries=10, timeout=5):
@@ -57,7 +57,7 @@ def retryer(max_retries=10, timeout=5):
     return wraps
 
 
-# In[ ]:
+# In[45]:
 
 
 # google documentation here:
@@ -363,14 +363,6 @@ class googledrive():
 
         # move this into a private method 
         if sanitize:
-#             myFields = fields.replace(' ','')
-#             fieldList = re.split(',\s*(?![^()]*\))', myFields)
-#             # remove whitespace and unknown options
-#             for each in fieldList:
-#                 if any(each.startswith(i) for i in self.fields):
-#                     fieldsProcessed.append(each)
-#                 else:
-#                     fieldsUnknown.append(each)
             fieldsProcessed, fieldsUnknown = self._sanitizeFields(fields)
         else:
             fieldsProcessed = fields.split(',')
@@ -390,17 +382,22 @@ class googledrive():
         return(result)
     
     @retryer(max_retries=5)
-    def getpermissions(self, fileID):
+    def getpermissions(self, fileId):
         """
         get a file, folder or Team Drive's permissions
         """
+        self.logger.debug('checking permissions for item id: {}'.format(fileId))
         try:
-            permissions = self.service.permissions().list(fileId=fileID, 
+            permissions = self.service.permissions().list(fileId=fileId, 
                                                           supportsTeamDrives=True).execute()
             
         except (errors.HttpError, error) as e:
-            self.logger.error(e)
-            return(None)
+            if e.resp.status in [404]:
+                self.logger.info('file/folder not found')
+                return(None)
+            else:
+                self.logger.error(e)
+                raise GDriveError(e)
         
         return(permissions)
     
@@ -414,13 +411,18 @@ class googledrive():
         
         raises GDriveError
         """
+        self.logger.debug('checking parents for item id: {}'.format(fileId))
         apiString = 'fileId={}, fields="parents"'.format(fileId)
         self.logger.debug('api call: {}'.format(apiString))
         try:
             parents = self.service.files().get(supportsTeamDrives=True,fileId=fileId, fields='parents').execute()
         except errors.HttpError as e:
-            raise GDriveError(e)
-            return(None)
+            if e.resp.status in [404]:
+                self.logger.info('file/folder not found')
+                return(None)
+            else:
+                self.logger.error(e)
+                raise GDriveError(e)
         
         return(parents)
 
@@ -462,10 +464,56 @@ class googledrive():
         
         self.teamdrives = result['teamDrives']
         return(result['teamDrives'])
+    
+    
+    def testgetprops(self, fileId = None, fields = 'parents, mimeType, webViewLink', sanitize=True):
+        '''
+        get a file or folder's properties based on google drive fileId
+        
+        for a more complete list: https://developers.google.com/drive/v3/web/migration
+        
+        args:
+            fileId (string): google drive file ID
+            fields (comma separated string): properties to query and return any of the fields
+                listed in self.fields
+            sanitize (bool): remove any field options that are not in the above list - false to allow anything
+            
+        returns:
+            list of dictionary - google drive file properties
+            
+        raises GDriveError
+        '''
+        fieldsExpected = self.fields
+        
+        fieldsProcessed = []
+        fieldsUnknown = []
+
+        # move this into a private method 
+        if sanitize:
+            fieldsProcessed, fieldsUnknown = self._sanitizeFields(fields)
+        else:
+            fieldsProcessed = fields.split(',')
+        if len(fieldsUnknown) > 0:
+            self.logger.error('unrecognized fields: {}'.format(fieldsUnknown))
+        
+        apiString = 'fileId={}, fields={}'.format(fileId, ','.join(fieldsProcessed))
+        self.logger.debug('files().get({})'.format(apiString))
+        try:
+            result = self.service.files().get(supportsTeamDrives=True, fileId=fileId, fields=','.join(fieldsProcessed)).execute()
+
+        except errors.HttpError as e:
+            if e.resp.status in [404]:
+                self.logger.info('file/folder not found')
+                return(None)
+            else:
+                self.logger.error(e)
+                raise GDriveError(e)
+        
+        return(result)
 
 
 
-# In[ ]:
+# In[46]:
 
 
 # # create an instance for testing
