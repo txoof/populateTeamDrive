@@ -2,7 +2,7 @@
 
 # coding: utf-8
 
-# In[3]:
+# In[1]:
 
 
 import logging
@@ -16,7 +16,7 @@ from apiclient import discovery
 from apiclient import errors 
 
 
-# In[4]:
+# In[2]:
 
 
 class GDriveError(Exception):
@@ -26,7 +26,7 @@ class NetworkError(RuntimeError):
     pass
 
 
-# In[5]:
+# In[3]:
 
 
 def retryer(max_retries=10, timeout=5):
@@ -57,7 +57,7 @@ def retryer(max_retries=10, timeout=5):
     return wraps
 
 
-# In[45]:
+# In[28]:
 
 
 # google documentation here:
@@ -220,15 +220,15 @@ class googledrive():
         return(result)
                 
     @retryer(max_retries=5)
-    def search(self, name=None, trashed=None, mimeType=False, fuzzy=False, modifiedTime=None, 
-               dopperator = '>', parents=None, fields='', orderBy='createdTime', 
+    def search(self, name=None, trashed=False, mimeType=False, fuzzy=False, modifiedTime=None, 
+               dopperator = '>', parents=None, fields=None, orderBy='createdTime', 
                teamdrive=None, sanitize=True, quiet=True ):
         '''
         search for an item by name and other properties in google drive using drive.files.list
         
         args:
             name (string): item name in google drive - required
-            trashed (bool): item is not in trash - default None (not used)
+            trashed (bool): item is not in trash - default False
             mimeType = (string): item is one of the known mime types (gdrive.mimeTypes) - default None
             fuzzy = (bool): substring search of names in drive
             date = (RFC3339 date string): modification time date string (YYYY-MM-DD)
@@ -262,12 +262,16 @@ class googledrive():
                  'modifiedTime': 'modifiedTime{}"{}"'.format(dopperator, modifiedTime)}
 
 
-        if sanitize:
+        if sanitize and fields:
             fieldsProcessed, fieldsUnknown = self._sanitizeFields(fields)
             # only supporting the files() fields here
             fieldsProcessed = 'files({})'.format(','.join(fieldsProcessed))
         else:
-            fieldsProcessed = fields.split(',')
+            if fields:
+                fieldsProcessed = fields.split(',')
+            else:
+                fieldsProcessed = 'files'
+            fieldsUnknown = ''
             
         if len(fieldsUnknown) > 0:
             self.logger.warn('unrecognized fields: {}'.format(fieldsUnknown))
@@ -513,7 +517,7 @@ class googledrive():
 
 
 
-# In[46]:
+# In[29]:
 
 
 # # create an instance for testing
