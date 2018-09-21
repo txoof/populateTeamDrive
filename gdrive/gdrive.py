@@ -2,7 +2,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[10]:
 
 
 import logging
@@ -11,12 +11,14 @@ import httplib2
 import re
 import time
 from ssl import SSLError
+from functools import wraps
 # from gdrive.auth import getCredentials
 from apiclient import discovery
 from apiclient import errors 
 
 
-# In[2]:
+
+# In[17]:
 
 
 class GDriveError(Exception):
@@ -26,22 +28,23 @@ class NetworkError(RuntimeError):
     pass
 
 
-# In[3]:
+# In[148]:
 
 
-def retryer(max_retries=10, timeout=5):
+def retryer(max_retries=10, timeout=2):
     '''
     Retry on specific network related errors with timeout
     https://pragmaticcoders.com/blog/retrying-exceptions-handling-internet-connection-problems/
     '''
     logger = logging.getLogger(__name__)
     logger.debug('max_retries: {}, timeout: {}'.format(max_retries, timeout))
-    def wraps(func):
-        network_exceptions= (
+    def decorator(func):
+        @wraps(func)
+        def retry(*args, **kwargs):
+            network_exceptions= (
             errors.HttpError,
             SSLError
             )
-        def inner(*args, **kwargs):
             for i in range(max_retries):
                 logger.info('attempt: {}'.format(i))
                 try:
@@ -53,11 +56,42 @@ def retryer(max_retries=10, timeout=5):
                     return result
             else:
                 raise NetworkError
-        return inner
-    return wraps
+        return retry
+    return decorator
 
 
-# In[28]:
+# In[13]:
+
+
+# def xretryer(max_retries=10, timeout=5):
+#     '''
+#     Retry on specific network related errors with timeout
+#     https://pragmaticcoders.com/blog/retrying-exceptions-handling-internet-connection-problems/
+#     '''
+#     logger = logging.getLogger(__name__)
+#     logger.debug('max_retries: {}, timeout: {}'.format(max_retries, timeout))
+#     def wraps(func):
+#         network_exceptions= (
+#             errors.HttpError,
+#             SSLError
+#             )
+#         def inner(*args, **kwargs):
+#             for i in range(max_retries):
+#                 logger.info('attempt: {}'.format(i))
+#                 try:
+#                     result = func(*args, **kwargs)
+#                 except network_exceptions:
+#                     time.sleep(timeout)
+#                     continue
+#                 else:
+#                     return result
+#             else:
+#                 raise NetworkError
+#         return inner
+#     return wraps
+
+
+# In[118]:
 
 
 # google documentation here:
@@ -517,14 +551,14 @@ class googledrive():
 
 
 
-# In[29]:
+# In[121]:
 
 
 # # create an instance for testing
-# from auth import *
-# logger = logging.getLogger(__name__)
-# logging.getLogger().setLevel(logging.DEBUG)
-# credential_store = "/tmp/"
-# credentials = getCredentials(credential_store)
-# myDrive = googledrive(credentials)
+from auth import *
+logger = logging.getLogger(__name__)
+logging.getLogger().setLevel(logging.DEBUG)
+credential_store = "/tmp/"
+credentials = getCredentials(credential_store)
+myDrive = googledrive(credentials)
 
