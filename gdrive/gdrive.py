@@ -2,7 +2,7 @@
 
 # coding: utf-8
 
-# In[10]:
+# In[ ]:
 
 
 import logging
@@ -18,7 +18,7 @@ from apiclient import errors
 
 
 
-# In[17]:
+# In[ ]:
 
 
 class GDriveError(Exception):
@@ -28,7 +28,7 @@ class NetworkError(RuntimeError):
     pass
 
 
-# In[148]:
+# In[ ]:
 
 
 def retryer(max_retries=10, timeout=2):
@@ -60,38 +60,7 @@ def retryer(max_retries=10, timeout=2):
     return decorator
 
 
-# In[13]:
-
-
-# def xretryer(max_retries=10, timeout=5):
-#     '''
-#     Retry on specific network related errors with timeout
-#     https://pragmaticcoders.com/blog/retrying-exceptions-handling-internet-connection-problems/
-#     '''
-#     logger = logging.getLogger(__name__)
-#     logger.debug('max_retries: {}, timeout: {}'.format(max_retries, timeout))
-#     def wraps(func):
-#         network_exceptions= (
-#             errors.HttpError,
-#             SSLError
-#             )
-#         def inner(*args, **kwargs):
-#             for i in range(max_retries):
-#                 logger.info('attempt: {}'.format(i))
-#                 try:
-#                     result = func(*args, **kwargs)
-#                 except network_exceptions:
-#                     time.sleep(timeout)
-#                     continue
-#                 else:
-#                     return result
-#             else:
-#                 raise NetworkError
-#         return inner
-#     return wraps
-
-
-# In[118]:
+# In[ ]:
 
 
 # google documentation here:
@@ -551,14 +520,14 @@ class googledrive():
 
 
 
-# In[121]:
+# In[ ]:
 
 
 # # create an instance for testing
-from auth import *
-logger = logging.getLogger(__name__)
-logging.getLogger().setLevel(logging.DEBUG)
-credential_store = "/tmp/"
-credentials = getCredentials(credential_store)
-myDrive = googledrive(credentials)
+# from auth import *
+# logger = logging.getLogger(__name__)
+# logging.getLogger().setLevel(logging.DEBUG)
+# credential_store = "/tmp/"
+# credentials = getCredentials(credential_store)
+# myDrive = googledrive(credentials)
 
