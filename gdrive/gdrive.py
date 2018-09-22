@@ -43,7 +43,7 @@ def retryer(max_retries=10, timeout=2):
             SSLError
             )
             for i in range(max_retries):
-                logger.info('attempt: {}'.format(i))
+                logger.debug('attempt: {}'.format(i))
                 try:
                     result = func(*args, **kwargs)
                 except network_exceptions:
