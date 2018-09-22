@@ -519,23 +519,10 @@ class googledrive():
 # In[15]:
 
 # # create an instance for testing
-from auth import *
-logger = logging.getLogger(__name__)
-logging.getLogger().setLevel(logging.DEBUG)
-credential_store = "/tmp/"
-credentials = getCredentials(credential_store)
-myDrive = googledrive(credentials)
-
-
-# In[13]:
-
-myDrive.service.files().list(q='name contains "Abohaime"', 
-                                                   
-                                                
-                                                   fields=('files')).execute()
-
-
-# In[16]:
-
-myDrive.search(name='Abohaimed', fuzzy=True, fields='webViewLink, id')
+# from auth import *
+# logger = logging.getLogger(__name__)
+# logging.getLogger().setLevel(logging.DEBUG)
+# credential_store = "/tmp/"
+# credentials = getCredentials(credential_store)
+# myDrive = googledrive(credentials)
 
