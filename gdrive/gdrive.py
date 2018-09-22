@@ -2,7 +2,7 @@
 
 # coding: utf-8
 
-# In[2]:
+# In[ ]:
 
 import logging
 import oauth2client
@@ -17,7 +17,7 @@ from apiclient import errors
 
 
 
-# In[3]:
+# In[ ]:
 
 class GDriveError(Exception):
     pass
@@ -26,7 +26,7 @@ class NetworkError(RuntimeError):
     pass
 
 
-# In[4]:
+# In[ ]:
 
 def retryer(max_retries=10, timeout=2):
     '''
@@ -57,7 +57,7 @@ def retryer(max_retries=10, timeout=2):
     return decorator
 
 
-# In[14]:
+# In[ ]:
 
 # google documentation here:
 # https://developers.google.com/apis-explorer/#p/
@@ -516,7 +516,7 @@ class googledrive():
 
 
 
-# In[15]:
+# In[ ]:
 
 # # create an instance for testing
 # from auth import *
