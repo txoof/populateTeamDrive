@@ -2,8 +2,7 @@
 
 # coding: utf-8
 
-# In[ ]:
-
+# In[2]:
 
 import logging
 import oauth2client
@@ -18,8 +17,7 @@ from apiclient import errors
 
 
 
-# In[ ]:
-
+# In[3]:
 
 class GDriveError(Exception):
     pass
@@ -28,8 +26,7 @@ class NetworkError(RuntimeError):
     pass
 
 
-# In[ ]:
-
+# In[4]:
 
 def retryer(max_retries=10, timeout=2):
     '''
@@ -60,8 +57,7 @@ def retryer(max_retries=10, timeout=2):
     return decorator
 
 
-# In[ ]:
-
+# In[5]:
 
 # google documentation here:
 # https://developers.google.com/apis-explorer/#p/
@@ -291,7 +287,7 @@ class googledrive():
             if eval(each):
                 qList.append(build[each])
         
-        apiString = 'q={}, orderBy={})'.format(' and '.join(qList), orderBy)
+        apiString = 'q={}, orderBy={}, fields={})'.format(' and '.join(qList), orderBy, fieldsProcessed)
         self.logger.debug('apicall: files().list({})'.format(apiString))
         
         if not quiet:
@@ -309,7 +305,7 @@ class googledrive():
                                                    supportsTeamDrives='true',
                                                    fields=fieldsProcessed).execute()
             else:
-                result = self.service.files().list(q=' and '.join(qList), orderBy=orderBy).execute()
+                result = self.service.files().list(q=' and '.join(qList), orderBy=orderBy, fields).execute()
 
         except errors.HttpError as e:
             self.logger.error(e)
@@ -473,61 +469,73 @@ class googledrive():
         return(result['teamDrives'])
     
     
-    def testgetprops(self, fileId = None, fields = 'parents, mimeType, webViewLink', sanitize=True):
-        '''
-        get a file or folder's properties based on google drive fileId
+#     def testgetprops(self, fileId = None, fields = 'parents, mimeType, webViewLink', sanitize=True):
+#         '''
+#         get a file or folder's properties based on google drive fileId
         
-        for a more complete list: https://developers.google.com/drive/v3/web/migration
+#         for a more complete list: https://developers.google.com/drive/v3/web/migration
         
-        args:
-            fileId (string): google drive file ID
-            fields (comma separated string): properties to query and return any of the fields
-                listed in self.fields
-            sanitize (bool): remove any field options that are not in the above list - false to allow anything
+#         args:
+#             fileId (string): google drive file ID
+#             fields (comma separated string): properties to query and return any of the fields
+#                 listed in self.fields
+#             sanitize (bool): remove any field options that are not in the above list - false to allow anything
             
-        returns:
-            list of dictionary - google drive file properties
+#         returns:
+#             list of dictionary - google drive file properties
             
-        raises GDriveError
-        '''
-        fieldsExpected = self.fields
+#         raises GDriveError
+#         '''
+#         fieldsExpected = self.fields
         
-        fieldsProcessed = []
-        fieldsUnknown = []
+#         fieldsProcessed = []
+#         fieldsUnknown = []
 
-        # move this into a private method 
-        if sanitize:
-            fieldsProcessed, fieldsUnknown = self._sanitizeFields(fields)
-        else:
-            fieldsProcessed = fields.split(',')
-        if len(fieldsUnknown) > 0:
-            self.logger.error('unrecognized fields: {}'.format(fieldsUnknown))
+#         # move this into a private method 
+#         if sanitize:
+#             fieldsProcessed, fieldsUnknown = self._sanitizeFields(fields)
+#         else:
+#             fieldsProcessed = fields.split(',')
+#         if len(fieldsUnknown) > 0:
+#             self.logger.error('unrecognized fields: {}'.format(fieldsUnknown))
         
-        apiString = 'fileId={}, fields={}'.format(fileId, ','.join(fieldsProcessed))
-        self.logger.debug('files().get({})'.format(apiString))
-        try:
-            result = self.service.files().get(supportsTeamDrives=True, fileId=fileId, fields=','.join(fieldsProcessed)).execute()
+#         apiString = 'fileId={}, fields={}'.format(fileId, ','.join(fieldsProcessed))
+#         self.logger.debug('files().get({})'.format(apiString))
+#         try:
+#             result = self.service.files().get(supportsTeamDrives=True, fileId=fileId, fields=','.join(fieldsProcessed)).execute()
 
-        except errors.HttpError as e:
-            if e.resp.status in [404]:
-                self.logger.info('file/folder not found')
-                return(None)
-            else:
-                self.logger.error(e)
-                raise GDriveError(e)
+#         except errors.HttpError as e:
+#             if e.resp.status in [404]:
+#                 self.logger.info('file/folder not found')
+#                 return(None)
+#             else:
+#                 self.logger.error(e)
+#                 raise GDriveError(e)
         
-        return(result)
+#         return(result)
 
 
 
-# In[ ]:
-
+# In[7]:
 
 # # create an instance for testing
-# from auth import *
-# logger = logging.getLogger(__name__)
-# logging.getLogger().setLevel(logging.DEBUG)
-# credential_store = "/tmp/"
-# credentials = getCredentials(credential_store)
-# myDrive = googledrive(credentials)
+from auth import *
+logger = logging.getLogger(__name__)
+logging.getLogger().setLevel(logging.DEBUG)
+credential_store = "/tmp/"
+credentials = getCredentials(credential_store)
+myDrive = googledrive(credentials)
+
+
+# In[13]:
+
+myDrive.service.files().list(q='name contains "Abohaime"', 
+                                                   
+                                                
+                                                   fields=('files')).execute()
+
+
+# In[10]:
+
+myDrive.search(name='Abohaimed', fuzzy=True, fields='webViewLink, id')
 
