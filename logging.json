@@ -4,14 +4,18 @@
     "formatters": {
         "simple": {
             "format": "%(asctime)s: [%(levelname)s: %(name)s.%(funcName)s] %(message)s"
+        },
+        "friendly": {
+            "format": "%(levelname)s: %(message)s"
         }
+
     },
 
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
             "level": "DEBUG",
-            "formatter": "simple",
+            "formatter": "friendly",
             "stream": "ext://sys.stdout"
         },
 
