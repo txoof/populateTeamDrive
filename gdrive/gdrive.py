@@ -57,7 +57,7 @@ def retryer(max_retries=10, timeout=2):
     return decorator
 
 
-# In[5]:
+# In[14]:
 
 # google documentation here:
 # https://developers.google.com/apis-explorer/#p/
@@ -305,7 +305,7 @@ class googledrive():
                                                    supportsTeamDrives='true',
                                                    fields=fieldsProcessed).execute()
             else:
-                result = self.service.files().list(q=' and '.join(qList), orderBy=orderBy, fields).execute()
+                result = self.service.files().list(q=' and '.join(qList), orderBy=orderBy, fields=fieldsProcessed).execute()
 
         except errors.HttpError as e:
             self.logger.error(e)
@@ -516,7 +516,7 @@ class googledrive():
 
 
 
-# In[7]:
+# In[15]:
 
 # # create an instance for testing
 from auth import *
@@ -535,7 +535,7 @@ myDrive.service.files().list(q='name contains "Abohaime"',
                                                    fields=('files')).execute()
 
 
-# In[10]:
+# In[16]:
 
 myDrive.search(name='Abohaimed', fuzzy=True, fields='webViewLink, id')
 
