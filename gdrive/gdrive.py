@@ -4,6 +4,7 @@
 
 # In[ ]:
 
+
 import logging
 import oauth2client
 import httplib2
@@ -19,6 +20,7 @@ from apiclient import errors
 
 # In[ ]:
 
+
 class GDriveError(Exception):
     pass
 
@@ -27,6 +29,7 @@ class NetworkError(RuntimeError):
 
 
 # In[ ]:
+
 
 def retryer(max_retries=10, timeout=2):
     '''
@@ -58,6 +61,7 @@ def retryer(max_retries=10, timeout=2):
 
 
 # In[ ]:
+
 
 # google documentation here:
 # https://developers.google.com/apis-explorer/#p/
@@ -394,7 +398,7 @@ class googledrive():
             permissions = self.service.permissions().list(fileId=fileId, 
                                                           supportsTeamDrives=True).execute()
             
-        except (errors.HttpError, error) as e:
+        except (errors.HttpError) as e:
             if e.resp.status in [404]:
                 self.logger.info('file/folder not found')
                 return(None)
@@ -517,6 +521,7 @@ class googledrive():
 
 
 # In[ ]:
+
 
 # # create an instance for testing
 # from auth import *
