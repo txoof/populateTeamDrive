@@ -1,5 +1,5 @@
 #!/usr/bin/env ipython
-
+#!/usr/bin/env python
 # coding: utf-8
 
 # In[ ]:
@@ -60,7 +60,7 @@ def retryer(max_retries=10, timeout=2):
     return decorator
 
 
-# In[ ]:
+# In[1]:
 
 
 # google documentation here:
@@ -450,11 +450,13 @@ class googledrive():
         return(user['user'])
     
     @retryer(max_retries=5)
-    def listTeamDrives(self):
+    def listTeamDrives(self, pageSize=50):
         '''
         List first page of team drives available to the user 
-            - this method ignores the continuation token (I can't figure it out!)
             raises GDriveError
+        
+            accepts:
+                pageSize (int) - items to include in result
             
             returns: 
                 dictonary of first page of TeamDrives and capabilities
@@ -463,7 +465,7 @@ class googledrive():
        
         
         try:
-            result = self.service.teamdrives().list(fields=','.join(fields)).execute()
+            result = self.service.teamdrives().list(pageSize=pageSize, fields=','.join(fields)).execute()
         except errors.HttpError as e:
             self.logger.error(e)
             raise GDriveError(e)
