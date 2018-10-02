@@ -31,7 +31,7 @@
 
         "error_file_handler": {
             "class": "logging.handlers.RotatingFileHandler",
-            "level": "ERROR",
+            "level": "WARN",
             "formatter": "simple",
             "filename": "errors.log",
             "maxBytes": 10485760,
