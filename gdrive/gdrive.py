@@ -1,9 +1,8 @@
 #!/usr/bin/env ipython
-#!/usr/bin/env python
+
 # coding: utf-8
 
 # In[ ]:
-
 
 import logging
 import oauth2client
@@ -20,7 +19,6 @@ from apiclient import errors
 
 # In[ ]:
 
-
 class GDriveError(Exception):
     pass
 
@@ -29,7 +27,6 @@ class NetworkError(RuntimeError):
 
 
 # In[ ]:
-
 
 def retryer(max_retries=10, timeout=2):
     '''
@@ -60,8 +57,7 @@ def retryer(max_retries=10, timeout=2):
     return decorator
 
 
-# In[1]:
-
+# In[ ]:
 
 # google documentation here:
 # https://developers.google.com/apis-explorer/#p/
@@ -124,12 +120,6 @@ class googledrive():
             #print('%10s: %s' % (key, self.mimeTypes[key]))
             print('{:8} {val}'.format(key+':', val=self.mimeTypes[key]))
     
-#     def quote(self, string):
-#         '''
-#         add double quotes arounda string
-#         '''
-#         return('"'+str(string)+'"')
-    
 
     def _sanitizeFields(self, fields):
         '''
@@ -176,12 +166,6 @@ class googledrive():
         body={}
         
         if sanitize:
-#             # remove whitespace and unknown options
-#             for each in fields.replace(' ','').split(','):
-#                 if each in fieldsExpected:
-#                     fieldsProcessed.append(each)
-#                 else:
-#                     fieldsUnknown.append(each)
             fieldsProcessed, fieldsUnknown = self._sanitizeFields(fields)
         else:
             fieldsProcessed = fields.split(',')
@@ -473,57 +457,10 @@ class googledrive():
         
         self.teamdrives = result['teamDrives']
         return(result['teamDrives'])
-    
-    
-#     def testgetprops(self, fileId = None, fields = 'parents, mimeType, webViewLink', sanitize=True):
-#         '''
-#         get a file or folder's properties based on google drive fileId
-        
-#         for a more complete list: https://developers.google.com/drive/v3/web/migration
-        
-#         args:
-#             fileId (string): google drive file ID
-#             fields (comma separated string): properties to query and return any of the fields
-#                 listed in self.fields
-#             sanitize (bool): remove any field options that are not in the above list - false to allow anything
-            
-#         returns:
-#             list of dictionary - google drive file properties
-            
-#         raises GDriveError
-#         '''
-#         fieldsExpected = self.fields
-        
-#         fieldsProcessed = []
-#         fieldsUnknown = []
-
-#         # move this into a private method 
-#         if sanitize:
-#             fieldsProcessed, fieldsUnknown = self._sanitizeFields(fields)
-#         else:
-#             fieldsProcessed = fields.split(',')
-#         if len(fieldsUnknown) > 0:
-#             self.logger.error('unrecognized fields: {}'.format(fieldsUnknown))
-        
-#         apiString = 'fileId={}, fields={}'.format(fileId, ','.join(fieldsProcessed))
-#         self.logger.debug('files().get({})'.format(apiString))
-#         try:
-#             result = self.service.files().get(supportsTeamDrives=True, fileId=fileId, fields=','.join(fieldsProcessed)).execute()
-
-#         except errors.HttpError as e:
-#             if e.resp.status in [404]:
-#                 self.logger.info('file/folder not found')
-#                 return(None)
-#             else:
-#                 self.logger.error(e)
-#                 raise GDriveError(e)
-        
-#         return(result)
 
 
 
 # In[ ]:
-
 
 # # create an instance for testing
 # from auth import *
