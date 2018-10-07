@@ -19,16 +19,6 @@
             "stream": "ext://sys.stdout"
         },
 
-        "info_file": {
-            "class": "logging.handlers.RotatingFileHandler",
-            "level": "INFO",
-            "formatter": "simple",
-            "filename": "portfolioCreator_info.log",
-            "maxBytes": 1048576,
-            "backupCount": 5,
-            "encoding": "utf8"
-        },
-
         "error_file": {
             "class": "logging.handlers.RotatingFileHandler",
             "level": "WARN",
