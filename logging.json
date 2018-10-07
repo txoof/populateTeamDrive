@@ -19,7 +19,7 @@
             "stream": "ext://sys.stdout"
         },
 
-        "info_file_handler": {
+        "info_file": {
             "class": "logging.handlers.RotatingFileHandler",
             "level": "INFO",
             "formatter": "simple",
@@ -29,7 +29,7 @@
             "encoding": "utf8"
         },
 
-        "error_file_handler": {
+        "error_file": {
             "class": "logging.handlers.RotatingFileHandler",
             "level": "WARN",
             "formatter": "simple",
@@ -38,6 +38,7 @@
             "backupCount": 5,
             "encoding": "utf8"
         }
+
     },
 
     "loggers": {
@@ -50,6 +51,6 @@
 
     "root": {
         "level": "WARN",
-        "handlers": ["console", "info_file_handler", "error_file_handler"]
+        "handlers": ["console", "error_file"]
     }
 }
