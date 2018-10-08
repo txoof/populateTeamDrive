@@ -2,7 +2,7 @@
 
 # coding: utf-8
 
-# In[7]:
+# In[1]:
 
 import logging
 import logging.config
@@ -37,7 +37,7 @@ except NameError as e:
     cwd = os.getcwd()
 
 
-# In[ ]:
+# In[2]:
 
 def setup_logging(
     default_config=None,
@@ -50,33 +50,41 @@ def setup_logging(
     """
     path = default_config
     value = os.getenv(env_key, None)
+    config = None
     if value:
         path = value
     if os.path.exists(path):
-        with open(path, 'rt') as f:
-            config = json.load(f)
+        try:
+            with open(path, 'rt') as f:
+                config = json.load(f)
+        except Exception as e:
+            print 'failed to read logging configuration'
+            return(None)
 
         # set the specific path to store log files
-        if output_path:
-            for handler in config['handlers']:
-                if config['handlers'][handler].has_key('filename'):
-                    logFile = os.path.basename(config['handlers'][handler]['filename'])
-                    logPath = os.path.expanduser(output_path+'/')
+        if config:
+            if output_path:
+                for handler in config['handlers']:
+                    if config['handlers'][handler].has_key('filename'):
+                        logFile = os.path.basename(config['handlers'][handler]['filename'])
+                        logPath = os.path.expanduser(output_path+'/')
 
-                    if not os.path.isdir(logPath):
-                        try:
-                            os.makedirs(logPath)
-                        except OSError as e:
-                            logging.error('failed to make log file directory: {}'.format(e))
-                            logging.error('using {} instead'.format(config['handlers'][handler]['filename']))
-                            break
+                        if not os.path.isdir(logPath):
+                            try:
+                                os.makedirs(logPath)
+                            except OSError as e:
+                                logging.error('failed to make log file directory: {}'.format(e))
+                                logging.error('using {} instead'.format(config['handlers'][handler]['filename']))
+                                break
 
-                    config['handlers'][handler]['filename'] = logPath+logFile
+                        config['handlers'][handler]['filename'] = logPath+logFile
 
 
-        logging.config.dictConfig(config)
-        logging.getLogger().setLevel(default_level)
-        return(config)
+            logging.config.dictConfig(config)
+            logging.getLogger().setLevel(default_level)
+            return(config)
+        else:
+            return(None)
 
     else:
         logging.basicConfig(level=default_level)
@@ -84,7 +92,7 @@ def setup_logging(
         
 
 
-# In[ ]:
+# In[3]:
 
 def fileSearch(path = None, search = None):
         '''search for a file name string in a given path'''
@@ -109,7 +117,7 @@ def fileSearch(path = None, search = None):
         return([m.group(0) for l in allFiles for m in [regex.search(l)] if m])
 
 
-# In[ ]:
+# In[4]:
 
 def getConfiguration(cfgfile):
     # required configuraiton options
@@ -155,7 +163,7 @@ def getConfiguration(cfgfile):
     return(config)
 
 
-# In[ ]:
+# In[5]:
 
 def getTeamDrive(myDrive):
     '''
@@ -189,7 +197,7 @@ def getTeamDrive(myDrive):
     return(teamdrive)
 
 
-# In[ ]:
+# In[6]:
 
 def getPortfolioFolder(myDrive, teamdriveID):
     '''
@@ -238,7 +246,7 @@ def getPortfolioFolder(myDrive, teamdriveID):
     
 
 
-# In[ ]:
+# In[7]:
 
 def getPathfromList(list_path=['~/'], message='Choose from the paths below', default=None):
     '''
@@ -282,7 +290,7 @@ def getPathfromList(list_path=['~/'], message='Choose from the paths below', def
     return (searchPath) 
 
 
-# In[ ]:
+# In[8]:
 
 def getFiles(path='~/', pattern='.*', ignorecase=True):
     '''
@@ -314,7 +322,7 @@ def getFiles(path='~/', pattern='.*', ignorecase=True):
     return(files)
 
 
-# In[ ]:
+# In[9]:
 
 def chooseFile(path='~/', pattern='.*', ignorecase=True, message='Please choose a file from the list'):
     '''
@@ -340,7 +348,7 @@ def chooseFile(path='~/', pattern='.*', ignorecase=True, message='Please choose 
         
 
 
-# In[ ]:
+# In[10]:
 
 def fileToList(inputfile):
     logger = logging.getLogger(__name__)
@@ -355,7 +363,7 @@ def fileToList(inputfile):
     return(lines)
 
 
-# In[ ]:
+# In[11]:
 
 def checkFolder(folderID, myDrive):
     '''
@@ -396,7 +404,7 @@ def checkFolder(folderID, myDrive):
     return(isFolder, writeable, props)
 
 
-# In[ ]:
+# In[12]:
 
 def mapHeaders(file_csv, expected_headers=[]):
     '''map an expected list of header values to their position in a csv
@@ -433,7 +441,7 @@ def mapHeaders(file_csv, expected_headers=[]):
     return(headerMap)
 
 
-# In[ ]:
+# In[13]:
 
 def doExit(exit_level=0, testing=False):
     logger = logging.getLogger(__name__)
@@ -442,7 +450,7 @@ def doExit(exit_level=0, testing=False):
         exit(0)    
 
 
-# In[ ]:
+# In[14]:
 
 def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True):
     '''
@@ -534,7 +542,7 @@ def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True
     return(createdFolders)
 
 
-# In[ ]:
+# In[15]:
 
 def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv, gradefolder_list, headerMap):
     '''
@@ -556,7 +564,7 @@ def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv
     widgets = ['Checking: ', Percentage(), ' ',
                Bar(marker='=',left='[',right=']'), 
                ' Processed ', Counter(),
-               ' ', ETA()]
+               ' ', AdaptiveETA()]
     
 
     
@@ -731,7 +739,7 @@ def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv
     return(studentFolders)
 
 
-# In[ ]:
+# In[16]:
 
 def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv'):
     logger = logging.getLogger(__name__)
@@ -767,7 +775,7 @@ def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv')
     return(output_path)
 
 
-# In[ ]:
+# In[17]:
 
 def main():
     version = '00.00 - 18.10.06'
@@ -1154,13 +1162,13 @@ def main():
         print ('Completed! Please send the CSV output file ({}) to the PowerSchool Administrator'.format(studentCSVoutput_path))
 
 
-# In[ ]:
+# In[18]:
 
 if __name__=='__main__':
     main()
 
 
-# In[ ]:
+# In[19]:
 
 # see this to learn how to freeze and package this
 # https://hackernoon.com/the-one-stop-guide-to-easy-cross-platform-python-freezing-part-1-c53e66556a0a

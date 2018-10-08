@@ -9,5 +9,8 @@ setup(name='portfolioCreator',
       license='GPLv3',
       packages=['portfolioCreator'],
       include_package_data=True,
-      zip_safe=False)
+      zip_safe=False,
+      entry_points={'console_scripts': 
+          ['portfolioCreator = portfolioCreator.__main__:main']
+      },)
 
