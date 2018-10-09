@@ -2,7 +2,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 import logging
@@ -31,14 +31,28 @@ from progressbar import ProgressBar, Bar, Counter, ETA,     AdaptiveETA, Percent
 # When launching a .command from the OS X Finder, the working directory is typically ~/; this is problematic
 # for locating resource files
 # I don't love this hack, but it works.
-try:
-    __file__
-    cwd = os.path.dirname(__file__)+'/'
-except NameError as e:
-    cwd = os.getcwd()
+# try:
+#     __file__
+#     cwd = os.path.dirname(__file__)+'/'
+# except NameError as e:
+#     cwd = os.getcwd()
 
 
-# In[2]:
+# In[ ]:
+
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
+# In[ ]:
 
 
 def setup_logging(
@@ -94,7 +108,7 @@ def setup_logging(
         
 
 
-# In[3]:
+# In[ ]:
 
 
 def fileSearch(path = None, search = None):
@@ -120,7 +134,7 @@ def fileSearch(path = None, search = None):
         return([m.group(0) for l in allFiles for m in [regex.search(l)] if m])
 
 
-# In[4]:
+# In[ ]:
 
 
 def getConfiguration(cfgfile):
@@ -169,7 +183,7 @@ def getConfiguration(cfgfile):
     return(config)
 
 
-# In[5]:
+# In[ ]:
 
 
 def getTeamDrive(myDrive):
@@ -204,7 +218,7 @@ def getTeamDrive(myDrive):
     return(teamdrive)
 
 
-# In[6]:
+# In[ ]:
 
 
 def getPortfolioFolder(myDrive, teamdriveID):
@@ -254,7 +268,7 @@ def getPortfolioFolder(myDrive, teamdriveID):
     
 
 
-# In[7]:
+# In[ ]:
 
 
 def getPathfromList(list_path=['~/'], message='Choose from the paths below', default=None):
@@ -299,7 +313,7 @@ def getPathfromList(list_path=['~/'], message='Choose from the paths below', def
     return (searchPath) 
 
 
-# In[8]:
+# In[ ]:
 
 
 def getFiles(path='~/', pattern='.*', ignorecase=True):
@@ -332,7 +346,7 @@ def getFiles(path='~/', pattern='.*', ignorecase=True):
     return(files)
 
 
-# In[9]:
+# In[ ]:
 
 
 def chooseFile(path='~/', pattern='.*', ignorecase=True, message='Please choose a file from the list'):
@@ -359,7 +373,7 @@ def chooseFile(path='~/', pattern='.*', ignorecase=True, message='Please choose 
         
 
 
-# In[10]:
+# In[ ]:
 
 
 def fileToList(inputfile):
@@ -375,7 +389,7 @@ def fileToList(inputfile):
     return(lines)
 
 
-# In[11]:
+# In[ ]:
 
 
 def checkFolder(folderID, myDrive):
@@ -417,7 +431,7 @@ def checkFolder(folderID, myDrive):
     return(isFolder, writeable, props)
 
 
-# In[12]:
+# In[ ]:
 
 
 def mapHeaders(file_csv, expected_headers=[]):
@@ -455,7 +469,7 @@ def mapHeaders(file_csv, expected_headers=[]):
     return(headerMap)
 
 
-# In[13]:
+# In[ ]:
 
 
 def doExit(exit_level=0, testing=False):
@@ -465,7 +479,7 @@ def doExit(exit_level=0, testing=False):
         sys.exit(0)    
 
 
-# In[14]:
+# In[ ]:
 
 
 def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True):
@@ -558,7 +572,7 @@ def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True
     return(createdFolders)
 
 
-# In[15]:
+# In[ ]:
 
 
 def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv, gradefolder_list, headerMap):
@@ -756,7 +770,7 @@ def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv
     return(studentFolders)
 
 
-# In[16]:
+# In[ ]:
 
 
 def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv'):
@@ -793,7 +807,7 @@ def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv')
     return(output_path)
 
 
-# In[17]:
+# In[ ]:
 
 
 def main():
@@ -805,7 +819,10 @@ def main():
     cfgfile = os.path.expanduser(os.path.join(cfgpath, cfgfile))
 
     logger = logging.getLogger(__name__)
-    loggingConfig = os.path.join(cwd, 'resources', 'logging.json')
+#     loggingConfig = os.path.join('resources', 'logging.json')
+    loggingConfig = resource_path('resources/logging.json')
+    print loggingConfig
+#     loggingConfig = 'resources/logging.json'
     setup_logging(default_config=loggingConfig,default_level=logging.ERROR, output_path='~/')
     
     os.environ['HUMANFRIENDLY_HIGHLIGHT_COLOR'] = 'green'
@@ -875,8 +892,9 @@ def main():
     if myConfig.has_option('Main', 'gradefolders'):
         gradefolders = myConfig.get('Main', 'gradefolders')
     else:
-        gradefolders = os.path.join(cwd, 'resources', 'gradefolders.txt')
-
+#         gradefolders = os.path.join('resources', 'gradefolders.txt')
+#         gradefolders = 'resources/gradefolders.txt'
+        gradefolders = resource_path('resources/gradefolders.txt')
 
     if myConfig.has_option('Main', 'useremail'):
         useremail = myConfig.get('Main', 'useremail')
@@ -889,7 +907,7 @@ def main():
         if loglevel in logging._levelNames:
             logger.setLevel(logging._levelNames[loglevel])
     else:
-        loglevel = logging.ERROR
+        loglevel = 'ERROR'
         logger.setLevel(loglevel)
         updateConfig = True
 
@@ -957,7 +975,9 @@ def main():
                         doExit(testing=testing)
 
         # get or reset credentials
-        clientSecrets = os.path.join(cwd, 'resources', 'client_secrets.json')
+#         clientSecrets = os.path.join('resources', 'client_secrets.json')
+#         clientSecrets = 'resources/client_secrets.json'
+        clientSecrets = resource_path('resources/client_secrets.json')
         try:
             credentials = getCredentials(storage_path=credential_store, client_secret=clientSecrets)
         except Exception as e:
@@ -1059,7 +1079,6 @@ def main():
             logger.error('failed to locate {}'.format(gradefolders))
             logger.error('exiting')
             print 'gradefolders.txt file is missing. Please reinstall the application.'
-            print 'download link: {}'.format(downloadlink)
             doExit(testing=testing)
 
         # get the gradefolder file
@@ -1181,7 +1200,7 @@ def main():
         print ('Completed! Please send the CSV output file ({}) to the PowerSchool Administrator'.format(studentCSVoutput_path))
 
 
-# In[18]:
+# In[ ]:
 
 
 if __name__=='__main__':
