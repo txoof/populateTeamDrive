@@ -889,7 +889,7 @@ def main():
         if loglevel in logging._levelNames:
             logger.setLevel(logging._levelNames[loglevel])
     else:
-        loglevel = logger.ERROR
+        loglevel = logging.ERROR
         logger.setLevel(loglevel)
         updateConfig = True
 
