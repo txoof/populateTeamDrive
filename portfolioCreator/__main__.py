@@ -4,6 +4,7 @@
 
 # In[1]:
 
+
 import logging
 import logging.config
 import os
@@ -38,6 +39,7 @@ except NameError as e:
 
 
 # In[2]:
+
 
 def setup_logging(
     default_config=None,
@@ -94,6 +96,7 @@ def setup_logging(
 
 # In[3]:
 
+
 def fileSearch(path = None, search = None):
         '''search for a file name string in a given path'''
         if not search:
@@ -119,9 +122,12 @@ def fileSearch(path = None, search = None):
 
 # In[4]:
 
+
 def getConfiguration(cfgfile):
     # required configuraiton options
     # Section: {'option': 'default value'}
+    logger = logging.getLogger(__name__)
+    logger.debug('getting configuration')
     cfgpath = os.path.dirname(cfgfile)
     config_required = {
         'Main': {'credentials': os.path.join(cfgpath, 'credentials/'), 
@@ -165,6 +171,7 @@ def getConfiguration(cfgfile):
 
 # In[5]:
 
+
 def getTeamDrive(myDrive):
     '''
     menu driven interaction for choosing a writeable team drive
@@ -198,6 +205,7 @@ def getTeamDrive(myDrive):
 
 
 # In[6]:
+
 
 def getPortfolioFolder(myDrive, teamdriveID):
     '''
@@ -248,6 +256,7 @@ def getPortfolioFolder(myDrive, teamdriveID):
 
 # In[7]:
 
+
 def getPathfromList(list_path=['~/'], message='Choose from the paths below', default=None):
     '''
     menu driven interaction to select path 
@@ -292,6 +301,7 @@ def getPathfromList(list_path=['~/'], message='Choose from the paths below', def
 
 # In[8]:
 
+
 def getFiles(path='~/', pattern='.*', ignorecase=True):
     '''
     search path for files matching pattern (regular expression)
@@ -324,6 +334,7 @@ def getFiles(path='~/', pattern='.*', ignorecase=True):
 
 # In[9]:
 
+
 def chooseFile(path='~/', pattern='.*', ignorecase=True, message='Please choose a file from the list'):
     '''
     menu interaction for choose a file in the specified path from the file glob created using a regex pattern
@@ -350,6 +361,7 @@ def chooseFile(path='~/', pattern='.*', ignorecase=True, message='Please choose 
 
 # In[10]:
 
+
 def fileToList(inputfile):
     logger = logging.getLogger(__name__)
     logger.debug('inputfile = {}'.format(inputfile))
@@ -364,6 +376,7 @@ def fileToList(inputfile):
 
 
 # In[11]:
+
 
 def checkFolder(folderID, myDrive):
     '''
@@ -406,6 +419,7 @@ def checkFolder(folderID, myDrive):
 
 # In[12]:
 
+
 def mapHeaders(file_csv, expected_headers=[]):
     '''map an expected list of header values to their position in a csv
     accepts:
@@ -443,6 +457,7 @@ def mapHeaders(file_csv, expected_headers=[]):
 
 # In[13]:
 
+
 def doExit(exit_level=0, testing=False):
     logger = logging.getLogger(__name__)
     logger.info('exiting before completion with exit code {}'.format(exit_level))
@@ -451,6 +466,7 @@ def doExit(exit_level=0, testing=False):
 
 
 # In[14]:
+
 
 def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True):
     '''
@@ -543,6 +559,7 @@ def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True
 
 
 # In[15]:
+
 
 def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv, gradefolder_list, headerMap):
     '''
@@ -741,6 +758,7 @@ def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv
 
 # In[16]:
 
+
 def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv'):
     logger = logging.getLogger(__name__)
     logger.debug('writing csv output at path: {}'.format(output_path))
@@ -776,6 +794,7 @@ def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv')
 
 
 # In[17]:
+
 
 def main():
     version = '00.00 - 18.10.06'
@@ -1164,11 +1183,13 @@ def main():
 
 # In[18]:
 
+
 if __name__=='__main__':
     main()
 
 
 # In[19]:
+
 
 # see this to learn how to freeze and package this
 # https://hackernoon.com/the-one-stop-guide-to-easy-cross-platform-python-freezing-part-1-c53e66556a0a
