@@ -10,7 +10,7 @@ Building
 --------
 ### Requirements
 Required python modules or 
-- pyinstaller==3.2.1
+- pyinstaller>=3.2.4
 - humanfriendly==4.16.1
 - httplib2==0.10.3
 - google_api_python_client==1.7.4
@@ -90,3 +90,6 @@ loglevel = ERROR
 # Optional Alternative gradefolders.txt
 gradefolders = /path/to/alternative/gradefolders.txt
 ```
+Use
+---
+Run the portfolioCreator program created in the ./dist folder by pyinstaller. The program can be called from the commandline `$ ./portfolioCreator`. It can also be run by double clicking on the file in the OS X Finder.
