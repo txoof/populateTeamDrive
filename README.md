@@ -102,7 +102,8 @@ Run the portfolioCreator program created in the ./dist folder by pyinstaller. Th
 
 Once the program completes execution, a CSV is prepared and written to the user's desktop. This file should be shared with the powerschool administrator. The CSV contains a link to each student's Portfolio folder on Google Team Drive
 
-### Adding HTML to Power
+### Adding HTML to PowerSchool
+See BA for instructions
 
 Resolving Issues
 ----------------
