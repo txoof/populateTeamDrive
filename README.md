@@ -24,26 +24,32 @@ Specifications
 --------------
 The script creates portfolio folders using in the following format on a google Team Drive in the following format from Preschool through Grade 12 (inclusive):
 ```
-Portfolio Folder
-│
-└───Class Of-2001
-    |
-    └───Lastname, Firstname - 000000
+[Google Team Drive]
+    Portfolio Folder
+    │
+    └───Class Of-2001
         |
-        └───00-Preschool
-        |
-        └───00-Transition Kindergarten
-        |
-        └───00-zKindergarten  #z forces the sort to work properly
-        |
-        └───01-Grade
-        |
-        └───02-Grade
-        |
-        └───03-Grade
-        |
-        └───12-Grade
+        └───Lastname, Firstname - 000000
+             |
+             └───00-Preschool
+             |
+             └───00-Transition Kindergarten
+             |
+             └───00-zKindergarten  #z forces the sort to work properly
+             |
+             └───01-Grade
+             |
+             └───02-Grade
+             |
+             └───03-Grade
+             |
+             └───12-Grade
 ```
+Student folder names are based on the LastFirst field from PowrSchool and the student_number field. Student folders are generated as: Lastname, Firstname - 000000. See the samples below:
+* Mercury, Freddy - 519460
+* Avogadro, Amedeo - 602210
+* Montoya, Inigo - 123456
+
 The namming of the grade-level folders is controlled by ./resources/gradefolders.txt. An alternative format can be specified in the configuration file (see configuration section).
 The gradefolders.txt file must have one single folder title per line. Trailing whitespace will be stripped
 ```
@@ -93,3 +99,15 @@ gradefolders = /path/to/alternative/gradefolders.txt
 Use
 ---
 Run the portfolioCreator program created in the ./dist folder by pyinstaller. The program can be called from the commandline `$ ./portfolioCreator`. It can also be run by double clicking on the file in the OS X Finder.
+
+Once the program completes execution, a CSV is prepared and written to the user's desktop. This file should be shared with the powerschool administrator. The CSV contains a link to each student's Portfolio folder on Google Team Drive
+
+### Adding HTML to Power
+
+Resolving Issues
+----------------
+The program attempts to recover from most errors and continue creating folders. Should it encounter a problem creating student folders, the student will be skipped and the user is notified. In this case, the student.export.text can be run again. Only missing folders are created. The program will not create duplicate folders on Team Drive.
+
+Should the program encounter an irrecoverable error and crashes, the student.export.text file can be run again without consequence. Should this problem persist, change the loglevel to DEBUG either through the configuration file (see above), or change the loglevel during the runtime configuration.
+
+Logs are recorded in ~/portfolioCreator_errors.log and are very helpful for debugging problems.
