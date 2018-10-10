@@ -71,7 +71,9 @@ The gradefolders.txt file must have one single folder title per line. Trailing w
 ```
 Configuration
 -------------
-Configuration is controlled by ~/.config/portfolioCreator/portfolioCreator.ini using the typical 'ini' format. The configuration will be generated the first time the application is run.
+The first time the program is run (or if the configuration file is missing) it will attempt to configure its self. During the OAuth authentication flow, the user will be asked to approve the application. It is important that the user that has access to the Team Drive folder that will contain the portfolio folders. 
+
+Configuration is maintained by ~/.config/portfolioCreator/portfolioCreator.ini using the typical 'ini' format. The configuration will be generated the first time the application is run.
 The configuration can (and should) be updated during the execution of the program, but can also be managed here
 ```
 [Main] # main section - this MUST be included
