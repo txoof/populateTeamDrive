@@ -4,8 +4,6 @@ The portfolio creator script creates an empty set of folders for students on Goo
 
 The project depends on credentials (client_secrets.json) file tied to a particular google drive account. Should the included client_secrets.json stop working, a new secret can be generated using the instructions below from any Google Suite (formerly Google Apps for Education) account.
 
-[Using OAuth 2.0 for Installed Applications](https://developers.google.com/api-client-library/python/auth/installed-app)
-
 Building
 --------
 ### Requirements
@@ -16,9 +14,38 @@ Required python modules or
 - google_api_python_client==1.7.4
 - progressbar2==3.38.
 
-### Build Instructions
+### Preparing to Build
+Make sure a valid and functioning client_secrets.json file is available in the ./resrources directory
+[Complete Instructions for OAuth2 Installed Applications](https://developers.google.com/identity/protocols/OAuth2InstalledApp) file
+#### Generate a client_secrets.json
+* Visit [Google API Console](https://console.developers.google.com/projectcreate)
+    - Give the project a name `Portfolio Creator` and click "Create"
+* Enable the Google Drive API in the [API Library](https://console.developers.google.com/apis/library)
+    - Ensure the project created above is selected 
+    - Search for "Google Drive" and "Enable"
+    - "Create Credentials" - see following step
+* From the [API Console Credentials Menu](https://console.developers.google.com/apis/credentials) select the project you created above. Click **Create credeitials** > Help me choose
+    1. **Add Credentials:** 
+        - *Which API are you using?* Drive API credentials
+        - *Where Will you be calling the API from?* Other UI(e.g. Windows, CLI tool)
+        - *What data will you be accessing?* User Data
+    2. **Create OAuth client ID**
+        - *Name* Portfolio Creator CLI YYYY-MM-DD
+        - Click *Create OAuth client ID*
+    3. **Setup OAuth 2.0 consent screen**
+        - *Email address* Use the default
+        - *Product name shown to users* Portfolio Creator
+        - *More Opations*
+            . *Homepage URL* https://ash.nl
+        - Continue
+    4. **Download credentials**
+        - *Download*
+        - Locate downloaded file and rename `client_secrets.json` and move into the ./resources/ folder
+    
 To build a single-file version of the application that can be run from  the command line or from OS X Finder use:
-`$ pyinstaller --clean portfolioCreator.spec`
+```
+$ pyinstaller --clean portfolioCreator.spec
+```
 
 Specifications
 --------------
