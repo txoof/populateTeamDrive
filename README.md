@@ -101,13 +101,19 @@ gradefolders = /path/to/alternative/gradefolders.txt
 Use
 ---
 ### Prepare Student.Export.text file
-Locate any new students in PowerSchool and run a quick export. Make sure to use the following settings:
+Locate any new students in PowerSchool and run a quick export. Make sure to use the following settings.
+Fields:
+```
+LastFirst
+Student_Number
+ClassOf
+```
 * Field Delimiter: `Comma`
 * Record Delimiter `CR`
-* ☑ Surround Fields
-* ☑ Column tgitles on 1st row
+* ☑ "Surround Fields"
+* ☑ Column titles on 1st row
 
-![Alt text](./documentation/Student.Export.text-format.png)
+![Quick Export Screen](./documentation/Student.Export.text-format.png)
 
 ### Execute Program
 Run the portfolioCreator program created in the ./dist folder by pyinstaller. The program can be called from the commandline `$ ./portfolioCreator`. It can also be run by double clicking on the file in the OS X Finder.
