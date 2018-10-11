@@ -7,12 +7,26 @@ The project depends on credentials (client_secrets.json) file tied to a particul
 Building
 --------
 ### Requirements
-Required python modules or 
+Required python modules for building a single package distribution 
+- python 2.7.x
 - pyinstaller>=3.2.4
 - humanfriendly==4.16.1
 - httplib2==0.10.3
 - google_api_python_client==1.7.4
 - progressbar2==3.38.
+
+### Setting up environment for building from source
+#### Installing with Homebrew & pip
+* Download and install [HomeBrew](https://brew.sh/) as an admin user
+* As an administrator (but not with sudo) setup pip & virtenv
+    - `$ brew install python`
+    - `$ pip install -U pip`
+    - `$ pip install virtualenv`
+    - `$ pip install virtualenvwrapper`
+    - Allow pip to only work in a virtual env: `$ echo export PIP_REQUIRE_VIRTUALENV=true > ~/.bash_profile`
+ #### Create a virtual environment
+ * `$ mkvirtualenv python2.7`
+ * ` pip install pyinstaller humanfriendly httplib2 google_api_python_client progressbar`
 
 ### Preparing to Build
 Make sure a valid and functioning client_secrets.json file is available in the ./resrources directory
