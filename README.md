@@ -16,7 +16,7 @@ Required python modules or
 - google_api_python_client==1.7.4
 - progressbar2==3.38.
 
-### Instructions
+### Build Instructions
 To build a single-file version of the application that can be run from  the command line or from OS X Finder use:
 `$ pyinstaller --clean portfolioCreator.spec`
 
@@ -101,19 +101,21 @@ gradefolders = /path/to/alternative/gradefolders.txt
 Use
 ---
 ### Prepare Student.Export.text file
-Locate any new students in PowerSchool and run a quick export. Make sure to use the following settings.
-Fields:
+Locate any new students in PowerSchool and run a quick export. Save the student.export.text file into either the Downloads or Desktop folder. 
+#### Quick Export Required Fields (additional fields are ignored):
 ```
 LastFirst
 Student_Number
 ClassOf
 ```
+#### Quick Export Settings
 * Field Delimiter: `Comma`
 * Record Delimiter `CR`
 * ☑ "Surround Fields"
 * ☑ Column titles on 1st row
 
-![Quick Export Screen](./documentation/Student.Export.text-format.png)
+#### Quick Export Sample Settings
+![Quick Export Screen](./documentation/Student.Export.text-format.png "Quick Export Sample Settings")
 
 ### Execute Program
 Run the portfolioCreator program created in the ./dist folder by pyinstaller. The program can be called from the commandline `$ ./portfolioCreator`. It can also be run by double clicking on the file in the OS X Finder.
