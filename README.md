@@ -100,6 +100,16 @@ gradefolders = /path/to/alternative/gradefolders.txt
 ```
 Use
 ---
+### Prepare Student.Export.text file
+Locate any new students in PowerSchool and run a quick export. Make sure to use the following settings:
+* Field Delimiter: `Comma`
+* Record Delimiter `CR`
+* ☑ Surround Fields
+* ☑ Column tgitles on 1st row
+
+![Alt text](./documentation/Student.Export.text-format.png)
+
+### Execute Program
 Run the portfolioCreator program created in the ./dist folder by pyinstaller. The program can be called from the commandline `$ ./portfolioCreator`. It can also be run by double clicking on the file in the OS X Finder.
 
 Once the program completes execution, a CSV is prepared and written to the user's desktop. This file should be shared with the powerschool administrator. The CSV contains a link to each student's Portfolio folder on Google Team Drive
