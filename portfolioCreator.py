@@ -2,7 +2,7 @@
 
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 import logging
@@ -12,19 +12,15 @@ import json
 import datetime
 # import ConfigParser
 import sys
+import signal
 import re
 from glob import glob
 import csv
-
+import textwrap
 import configuration
 from gdrive.auth import getCredentials
 from gdrive.gdrive import googledrive, GDriveError
-
 from humanfriendly import prompts
-
-
-
-
 from progressbar import ProgressBar, Bar, Counter, ETA,     AdaptiveETA, Percentage
 
 # get the current working directory
@@ -38,7 +34,7 @@ from progressbar import ProgressBar, Bar, Counter, ETA,     AdaptiveETA, Percent
 #     cwd = os.getcwd()
 
 
-# In[ ]:
+# In[2]:
 
 
 def resource_path(relative_path):
@@ -52,7 +48,7 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
-# In[ ]:
+# In[4]:
 
 
 def setup_logging(
@@ -108,7 +104,7 @@ def setup_logging(
         
 
 
-# In[ ]:
+# In[5]:
 
 
 def fileSearch(path = None, search = None):
@@ -134,7 +130,7 @@ def fileSearch(path = None, search = None):
         return([m.group(0) for l in allFiles for m in [regex.search(l)] if m])
 
 
-# In[ ]:
+# In[6]:
 
 
 def getConfiguration(cfgfile):
@@ -183,7 +179,7 @@ def getConfiguration(cfgfile):
     return(config)
 
 
-# In[ ]:
+# In[7]:
 
 
 def getTeamDrive(myDrive):
@@ -218,7 +214,7 @@ def getTeamDrive(myDrive):
     return(teamdrive)
 
 
-# In[ ]:
+# In[8]:
 
 
 def getPortfolioFolder(myDrive, teamdriveID):
@@ -268,7 +264,7 @@ def getPortfolioFolder(myDrive, teamdriveID):
     
 
 
-# In[ ]:
+# In[9]:
 
 
 def getPathfromList(list_path=['~/'], message='Choose from the paths below', default=None):
@@ -313,7 +309,7 @@ def getPathfromList(list_path=['~/'], message='Choose from the paths below', def
     return (searchPath) 
 
 
-# In[ ]:
+# In[10]:
 
 
 def getFiles(path='~/', pattern='.*', ignorecase=True):
@@ -346,7 +342,7 @@ def getFiles(path='~/', pattern='.*', ignorecase=True):
     return(files)
 
 
-# In[ ]:
+# In[11]:
 
 
 def chooseFile(path='~/', pattern='.*', ignorecase=True, message='Please choose a file from the list'):
@@ -373,23 +369,26 @@ def chooseFile(path='~/', pattern='.*', ignorecase=True, message='Please choose 
         
 
 
-# In[ ]:
+# In[52]:
 
 
-def fileToList(inputfile):
+def fileToList(inputfile, stripWhitespace=True):
     logger = logging.getLogger(__name__)
     logger.debug('inputfile = {}'.format(inputfile))
 #     super elegant solution as seen below 
 #     https://stackoverflow.com/questions/4842057/easiest-way-to-ignore-blank-lines-when-reading-a-file-in-python
     try:
         with open(inputfile, 'r') as fhandle:
-            lines = filter(None, (line.rstrip() for line in fhandle))
+            if stripWhitespace:
+                lines = filter(None, (line.strip() for line in fhandle))
+            else:
+                lines = [line.strip() for line in fhandle]
     except IOError as e:
         logger.debug(e)
     return(lines)
 
 
-# In[ ]:
+# In[13]:
 
 
 def checkFolder(folderID, myDrive):
@@ -431,7 +430,7 @@ def checkFolder(folderID, myDrive):
     return(isFolder, writeable, props)
 
 
-# In[ ]:
+# In[14]:
 
 
 def mapHeaders(file_csv, expected_headers=[]):
@@ -469,7 +468,7 @@ def mapHeaders(file_csv, expected_headers=[]):
     return(headerMap)
 
 
-# In[ ]:
+# In[15]:
 
 
 def doExit(exit_level=0, testing=False):
@@ -479,7 +478,7 @@ def doExit(exit_level=0, testing=False):
         sys.exit(0)    
 
 
-# In[ ]:
+# In[16]:
 
 
 def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True):
@@ -572,7 +571,7 @@ def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True
     return(createdFolders)
 
 
-# In[ ]:
+# In[17]:
 
 
 def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv, gradefolder_list, headerMap):
@@ -770,7 +769,7 @@ def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv
     return(studentFolders)
 
 
-# In[ ]:
+# In[18]:
 
 
 def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv'):
@@ -807,11 +806,11 @@ def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv')
     return(output_path)
 
 
-# In[ ]:
+# In[61]:
 
 
 def main():
-    version = '00.00 - 18.10.06'
+    version = '00.01 - 2018.10.12'
     appName = 'portfolioCreator'
 
     cfgfile = appName+'.ini'
@@ -819,25 +818,18 @@ def main():
     cfgfile = os.path.expanduser(os.path.join(cfgpath, cfgfile))
 
     logger = logging.getLogger(__name__)
-#     loggingConfig = os.path.join('resources', 'logging.json')
     loggingConfig = resource_path('resources/logging.json')
-    print loggingConfig
-#     loggingConfig = 'resources/logging.json'
     setup_logging(default_config=loggingConfig,default_level=logging.ERROR, output_path='~/')
     
+    # set the color for human friendly 
     os.environ['HUMANFRIENDLY_HIGHLIGHT_COLOR'] = 'green'
-
-    
     
     logging.info('===Starting {} Log==='.format(appName))
-    
 
     # location of student export files downloaded from powerschool
     studentexport_list = ['~/Downloads', '~/Desktop']
     studentexport = None
     studentexport_path = None
-
-    downloadlink = 'https://foo.foof.foo'
 
     # assume the configuration file does not need to be updated
     updateConfig = False
@@ -922,16 +914,20 @@ def main():
         logger.debug('current configuration:')
         logger.debug('\n{}'.format(config_dict))
 
-    # google drive authorization
-    logging.info('checking google credentials')
-    print 'This program will read a PowerSchool Student Export file and create portfolio folders in google Team Drive'
-    print 'Please make sure you have a Student Export.text file prepared with the following fields:'
-    print '"ClassOf", "LastFirst", "Student_Number"'
-    print 'Please make sure the file is either on the Desktop or Downloads folder'
-    print '\n'*3
-    print 'You *may* be directed to a google web page that asks you to authorize this applicaiton.'
-    print 'Please choose an ASH account with access to the portfolio folder on Team Drive and authorize this applicaiton.'
-    print 'When you are done, please close the newly created tab in your web browser and return to this window.'
+    about = resource_path('./resources/about.txt')
+    about_list = fileToList(about, False)
+    wrapper = textwrap.TextWrapper(replace_whitespace=True, drop_whitespace=True, width=65)
+    print '{} - Version: {}'.format(appName, version)
+    for line in about_list:
+        print '\n'.join(wrapper.wrap(text=line))
+#     print 'This program will read a PowerSchool Student Export file and create portfolio folders in google Team Drive'
+#     print 'Please make sure you have a Student Export.text file prepared with the following fields:'
+#     print '"ClassOf", "LastFirst", "Student_Number"'
+#     print 'Please make sure the file is either on the Desktop or Downloads folder'
+#     print '\n'*3
+#     print 'You *may* be directed to a google web page that asks you to authorize this applicaiton.'
+#     print 'Please choose an ASH account with access to the portfolio folder on Team Drive and authorize this applicaiton.'
+#     print 'When you are done, please close the newly created tab in your web browser and return to this window.'
     if not prompts.prompt_for_confirmation(question='Would you like to proceed?', default=True):
         print 'Exiting'
         doExit(testing=testing)
@@ -1198,13 +1194,25 @@ def main():
         print ('If this error persists please check the logs: {}'.format(log_files))
     else:
         print ('Completed! Please send the CSV output file ({}) to the PowerSchool Administrator'.format(studentCSVoutput_path))
+        
+        # get input from the user to hold the window open when run from Finder
 
 
-# In[ ]:
+# In[62]:
 
 
 if __name__=='__main__':
     main()
+
+
+# In[58]:
+
+
+# about = resource_path('./resources/about.txt')
+# about_list = fileToList(about, False)
+# # wrapper = textwrap.TextWrapper(replace_whitespace=True, drop_whitespace=True, width=65)
+# for each in about_list:
+#     print '\n'.join(wrapper.wrap(text=each))
 
 
 # In[ ]:
