@@ -8,4 +8,12 @@ This program will read a PowerSchool Student Export file and create portfolio fo
 The student.export.text file must contain the following fields (in any order):
 "ClassOf", "LastFirst", "Student_Number"
 
-When you begin, you *may* be directed to a Google web page that asks you to authorize this application. If this happens, please choose an ASH account that has access to the student portfolio folders on the Google Team Drive. When you are done with the authentication, close the new tab in your web browser and return to this window. The authentication window will typically only appear when you authenticate for the first time, or after 30 days of inactivity with this application.
+Make sure to use the following settings:
+Field Delimter: Comma
+Record Delimter: CR
+Select "Surround Fields"
+Select "Column titles on 1st row"
+
+When you begin, you *may* be directed to a Google web page that asks you to authorize this application. If this happens, please choose an ASH account that has access to the student portfolio folders on the Google Team Drive. When the portfolioCreator wants access to your Google Account, click "Allow."
+
+When you are done with the authentication, close the new tab in your web browser and return to this window. The authentication window will typically only appear when you authenticate for the first time, or after 30 days of inactivity with this application.
