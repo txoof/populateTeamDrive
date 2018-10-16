@@ -4,6 +4,23 @@ The portfolio creator script creates an empty set of folders for students on Goo
 
 The project depends on credentials (client_secrets.json) file tied to a particular google drive account. Should the included client_secrets.json stop working, a new secret can be generated using the instructions below from any Google Suite (formerly Google Apps for Education) account.
 
+  * [Usage Instructions](#usage-instructions)
+    * [Prepare Student\.Export\.text file](#prepare-studentexporttext-file)
+      * [Required Quick Export Fields (any additional fields are ignored):](#required-quick-export-fields-any-additional-fields-are-ignored)
+      * [Quick Export Settings](#quick-export-settings)
+      * [Quick Export Sample Settings](#quick-export-sample-settings)
+    * [Execute Program](#execute-program)
+    * [Adding HTML to PowerSchool](#adding-html-to-powerschool)
+  * [Building](#building)
+    * [Requirements](#requirements)
+    * [Setting up environment for building from source](#setting-up-environment-for-building-from-source)
+      * [Installing with Homebrew &amp; pip](#installing-with-homebrew--pip)
+      * [Create a virtual environment](#create-a-virtual-environment)
+    * [Preparing to Build](#preparing-to-build)
+      * [Generate a client\_secrets\.json](#generate-a-client_secretsjson)
+  * [Specifications](#specifications)
+  * [Configuration](#configuration)
+  * [Resolving Issues](#resolving-issues)
 
 Usage Instructions
 -------------------
@@ -37,7 +54,7 @@ ClassOf
 ### Execute Program
 Run the portfolioCreator program created in the ./dist folder by pyinstaller. The program can be called from the commandline `$ ./portfolioCreator`. It can also be run by double clicking on the file in the OS X Finder.
 
-Once the program completes execution, a CSV is prepared and written to the user's desktop. This file should be shared with the powerschool administrator. The CSV contains a link to each student's Portfolio folder on Google Team Drive
+Once the program completes execution, a TSV is prepared and written to the user's desktop. **This file should be shared with the powerschool administrator.** The TSV§ contains a link to each student's Portfolio folder on Google Team Drive
 
 ### Adding HTML to PowerSchool
 See BA for instructions
