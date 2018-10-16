@@ -37,7 +37,7 @@ ClassOf
 ### Execute Program
 Run the portfolioCreator program created in the ./dist folder by pyinstaller. The program can be called from the commandline `$ ./portfolioCreator`. It can also be run by double clicking on the file in the OS X Finder.
 
-Once the program completes execution, a CSV is prepared and written to the user's desktop. This file should be shared with the powerschool administrator. The CSV contains a link to each student's Portfolio folder on Google Team Drive
+Once the program completes execution, a TSV is prepared and written to the user's desktop. **This file should be shared with the powerschool administrator.** The TSV§ contains a link to each student's Portfolio folder on Google Team Drive
 
 ### Adding HTML to PowerSchool
 See BA for instructions
