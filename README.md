@@ -4,6 +4,45 @@ The portfolio creator script creates an empty set of folders for students on Goo
 
 The project depends on credentials (client_secrets.json) file tied to a particular google drive account. Should the included client_secrets.json stop working, a new secret can be generated using the instructions below from any Google Suite (formerly Google Apps for Education) account.
 
+
+Usage Instructions
+-------------------
+### Prepare Student.Export.text file
+Locate any new students in PowerSchool and run a quick export. Save the student.export.text file into either the Downloads or Desktop folder. 
+The following query can be used to extract recently added students:
+`Grade_Level=X;DistrictEntryDate>=MM/DD/YYYY` 
+* Where:
+    - `X` = Grade level (TK, K, 1, 2, 3, etc.)
+    - `MM` = Two digit represnetation of month (01, 11, etc.)
+    - `DD` = Two digit representation of day (11, 17, 29, etc.)
+    - `YYYY` = Four digit representation year (2018, 2016, etc.)
+Example:
+`Grade_Level=3;DistrictEntryDate>=07/31/2018`
+#### Required Quick Export Fields (any additional fields are ignored):
+```
+LastFirst
+Student_Number
+ClassOf
+```
+
+#### Quick Export Settings
+* Field Delimiter: `Comma`
+* Record Delimiter `CR`
+* ☑ "Surround Fields"
+* ☑ Column titles on 1st row
+
+#### Quick Export Sample Settings
+![Quick Export Screen](./documentation/Student.Export.text-format.png "Quick Export Sample Settings")
+
+### Execute Program
+Run the portfolioCreator program created in the ./dist folder by pyinstaller. The program can be called from the commandline `$ ./portfolioCreator`. It can also be run by double clicking on the file in the OS X Finder.
+
+Once the program completes execution, a CSV is prepared and written to the user's desktop. This file should be shared with the powerschool administrator. The CSV contains a link to each student's Portfolio folder on Google Team Drive
+
+### Adding HTML to PowerSchool
+See BA for instructions
+
+
 Building
 --------
 ### Requirements
@@ -139,32 +178,6 @@ loglevel = ERROR
 # Optional Alternative gradefolders.txt
 gradefolders = /path/to/alternative/gradefolders.txt
 ```
-Use
----
-### Prepare Student.Export.text file
-Locate any new students in PowerSchool and run a quick export. Save the student.export.text file into either the Downloads or Desktop folder. 
-#### Quick Export Required Fields (additional fields are ignored):
-```
-LastFirst
-Student_Number
-ClassOf
-```
-#### Quick Export Settings
-* Field Delimiter: `Comma`
-* Record Delimiter `CR`
-* ☑ "Surround Fields"
-* ☑ Column titles on 1st row
-
-#### Quick Export Sample Settings
-![Quick Export Screen](./documentation/Student.Export.text-format.png "Quick Export Sample Settings")
-
-### Execute Program
-Run the portfolioCreator program created in the ./dist folder by pyinstaller. The program can be called from the commandline `$ ./portfolioCreator`. It can also be run by double clicking on the file in the OS X Finder.
-
-Once the program completes execution, a CSV is prepared and written to the user's desktop. This file should be shared with the powerschool administrator. The CSV contains a link to each student's Portfolio folder on Google Team Drive
-
-### Adding HTML to PowerSchool
-See BA for instructions
 
 Resolving Issues
 ----------------
