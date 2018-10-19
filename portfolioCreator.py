@@ -2,7 +2,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 import logging
@@ -34,11 +34,11 @@ from progressbar import ProgressBar, Bar, Counter, ETA,     AdaptiveETA, Percent
 #     cwd = os.getcwd()
 
 
-# In[2]:
+# In[ ]:
 
 
 def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
+    """ Get absolute path to resource, works for ide and for PyInstaller """
     try:
         # PyInstaller creates a temp folder and stores path in _MEIPASS
         base_path = sys._MEIPASS
@@ -48,7 +48,7 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
-# In[4]:
+# In[ ]:
 
 
 def setup_logging(
@@ -104,7 +104,7 @@ def setup_logging(
         
 
 
-# In[5]:
+# In[ ]:
 
 
 def fileSearch(path = None, search = None):
@@ -127,10 +127,11 @@ def fileSearch(path = None, search = None):
         # list comprehension search with regex
         #http://www.cademuir.eu/blog/2011/10/20/python-searching-for-a-string-within-a-list-list-comprehension/
         regex = re.compile('.*('+search+').*')
+        
         return([m.group(0) for l in allFiles for m in [regex.search(l)] if m])
 
 
-# In[6]:
+# In[ ]:
 
 
 def getConfiguration(cfgfile):
@@ -179,7 +180,7 @@ def getConfiguration(cfgfile):
     return(config)
 
 
-# In[7]:
+# In[ ]:
 
 
 def getTeamDrive(myDrive):
@@ -214,7 +215,7 @@ def getTeamDrive(myDrive):
     return(teamdrive)
 
 
-# In[8]:
+# In[ ]:
 
 
 def getPortfolioFolder(myDrive, teamdriveID):
@@ -264,7 +265,7 @@ def getPortfolioFolder(myDrive, teamdriveID):
     
 
 
-# In[9]:
+# In[ ]:
 
 
 def getPathfromList(list_path=['~/'], message='Choose from the paths below', default=None):
@@ -309,7 +310,7 @@ def getPathfromList(list_path=['~/'], message='Choose from the paths below', def
     return (searchPath) 
 
 
-# In[10]:
+# In[ ]:
 
 
 def getFiles(path='~/', pattern='.*', ignorecase=True):
@@ -332,20 +333,21 @@ def getFiles(path='~/', pattern='.*', ignorecase=True):
     files = []
         
     if ignorecase:
-        for eachfile in [f for f in glob(path) if re.match(pattern, f, flags=flags)]:
+        for eachfile in [f for f in sorted(glob(path), key=os.path.getmtime) if re.match(pattern, f, flags=flags)]:
             files.append(eachfile)
     
     if not ignorecase:
-        for eachfile in [f for f in glob(path) if re.match(pattern, f)]:
+        for eachfile in [f for f in sorted(glob(path), key=os.path.getmtime) if re.match(pattern, f)]:
             files.append(eachfile)        
     
     return(files)
 
 
-# In[11]:
+# In[ ]:
 
 
-def chooseFile(path='~/', pattern='.*', ignorecase=True, message='Please choose a file from the list'):
+def chooseFile(path='~/', pattern='.*', ignorecase=True, 
+               message='Please choose a file from the list\n**Files are sorted newest at bottom**'):
     '''
     menu interaction for choose a file in the specified path from the file glob created using a regex pattern
     accepts:
@@ -369,7 +371,7 @@ def chooseFile(path='~/', pattern='.*', ignorecase=True, message='Please choose 
         
 
 
-# In[52]:
+# In[ ]:
 
 
 def fileToList(inputfile, stripWhitespace=True):
@@ -388,7 +390,7 @@ def fileToList(inputfile, stripWhitespace=True):
     return(lines)
 
 
-# In[13]:
+# In[ ]:
 
 
 def checkFolder(folderID, myDrive):
@@ -430,7 +432,7 @@ def checkFolder(folderID, myDrive):
     return(isFolder, writeable, props)
 
 
-# In[14]:
+# In[ ]:
 
 
 def mapHeaders(file_csv, expected_headers=[]):
@@ -448,11 +450,13 @@ def mapHeaders(file_csv, expected_headers=[]):
     try:
         csvHeader = file_csv[0]
     except IndexError as e:
-        logging.error('csv empty: {}'.format(e))
-        return(None)
+        logger.warn('csv empty: {}'.format(e))
+        csvHeader = {}
     
+    logger.debug('checking for missing headers')
     for each in expected_headers:
         if each not in csvHeader:
+            logger.debug('missing: {}'.format(each))
             missing_headers.append(each)
     
     headerMap['missingheaders'] = missing_headers
@@ -464,11 +468,20 @@ def mapHeaders(file_csv, expected_headers=[]):
     for index, value in enumerate(csvHeader):
         if value in expected_headers:
             headerMap['headers'][value] = index
-    logger.debug('successfully maped headers')
+    logger.debug('completed mapping headers')
+    logger.debug('return: {}'.format(headerMap))
     return(headerMap)
 
 
-# In[15]:
+# In[ ]:
+
+
+# mylogger = logging.getLogger(__name__)
+# mylogger.setLevel(logging.DEBUG)
+# mapHeaders('/Users/aciuffo/Downloads/bad.student.export.text', ['classOf', 'FirstLast', 'Student_Number'])
+
+
+# In[ ]:
 
 
 def doExit(exit_level=0, testing=False):
@@ -478,7 +491,7 @@ def doExit(exit_level=0, testing=False):
         sys.exit(0)    
 
 
-# In[16]:
+# In[ ]:
 
 
 def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True):
@@ -571,7 +584,7 @@ def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True
     return(createdFolders)
 
 
-# In[17]:
+# In[ ]:
 
 
 def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv, gradefolder_list, headerMap):
@@ -597,7 +610,7 @@ def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv
                ' ', AdaptiveETA()]
     
 
-    
+    # init variables
     studentFolders = {}
     classOfFolders = {}
     classOf_string = 'Class Of-'
@@ -769,7 +782,7 @@ def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv
     return(studentFolders)
 
 
-# In[18]:
+# In[ ]:
 
 
 def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv'):
@@ -777,7 +790,7 @@ def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv')
     logger.debug('writing csv output at path: {}'.format(output_path))
     
     output_path = os.path.expanduser(output_path)
-    htmlFormat = '<a href={}>Right click & Open in new tab to view student folder</a>'
+    htmlFormat = '<a href={}>Right click link and "Open Link in New Tab" to view student\'s folder</a>'
     csvOutput_list = []
     if not csvHeaders:
         csvHeaders = ['webViewLink',
@@ -798,7 +811,9 @@ def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv')
                             csvOutput_list.append(thisStudent)
     try:
         with open(output_path, 'wb') as f:
-            writer = csv.writer(f, quoting=csv.QUOTE_ALL)
+            writer = csv.writer(f,
+                    quoting = csv.QUOTE_NONE,
+                    delimiter='\t')
             writer.writerows(csvOutput_list)
     except Exception as e:
         logger.error('error writing CSV file: {}; {}'.format(output_path, e))
@@ -806,7 +821,7 @@ def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv')
     return(output_path)
 
 
-# In[61]:
+# In[ ]:
 
 
 def main():
@@ -850,7 +865,7 @@ def main():
             log_files.append(handlers.baseFilename)
 
     # set the base path for the output file
-    studentCSVoutput_path = studentCSVoutput_path = '~/Desktop/Links_for_PowerSchool_{:%Y-%m-%d_%H.%M.%S}.csv'
+    studentCSVoutput_path = studentCSVoutput_path = '~/Desktop/Links_for_PowerSchool_{:%Y-%m-%d_%H.%M.%S}.tsv.txt'
     
     # list to record student ids that had issues during the folder creation process
     failures = []
@@ -920,14 +935,8 @@ def main():
     print '{} - Version: {}'.format(appName, version)
     for line in about_list:
         print '\n'.join(wrapper.wrap(text=line))
-#     print 'This program will read a PowerSchool Student Export file and create portfolio folders in google Team Drive'
-#     print 'Please make sure you have a Student Export.text file prepared with the following fields:'
-#     print '"ClassOf", "LastFirst", "Student_Number"'
-#     print 'Please make sure the file is either on the Desktop or Downloads folder'
-#     print '\n'*3
-#     print 'You *may* be directed to a google web page that asks you to authorize this applicaiton.'
-#     print 'Please choose an ASH account with access to the portfolio folder on Team Drive and authorize this applicaiton.'
-#     print 'When you are done, please close the newly created tab in your web browser and return to this window.'
+
+    # begin processing?
     if not prompts.prompt_for_confirmation(question='Would you like to proceed?', default=True):
         print 'Exiting'
         doExit(testing=testing)
@@ -1101,9 +1110,7 @@ def main():
                                                      message='Please choose which folder contains the Student Export File.',
                                                      default=studentexport_list[0])
 
-            # move this pattern into the configuration file? 
 
-            # This is broken - need to handle when "NONE" is returned
             studentexport = chooseFile(path=studentexport_path, pattern='.*student.*export.*')
             # try again if nothing is returned
             if not studentexport:
@@ -1115,17 +1122,14 @@ def main():
                 print 'Could not read file: {}. Please choose another file'.format(studentexport)
                 logger.error('file is unreadable: {}'.format(studentexport))
                 studentexport = None
-
-        #TO DO - this looks odd. it appears that studentexport is pulled twice but unused.
-        # try commenting this entire block out. It does not look right.
+                
         if not studentexport:
-            logger.error('no student export file; exiting')
-            print 'Cannot proceed without a student export file. Exiting'
-            doExit(testing=testing)
-        else:
-            myConfig.set('Main', 'studentexport', studentexport)
-            studentexport_list = fileToList(studentexport)
-
+            logger.warn('User was not able to specify student export file')
+            if prompts.prompt_for_confirmation(question='It looks like you are having trouble locating a student.export.text file.\nWould you like to try again?'):
+                continue
+            else:
+                doExit(testing=testing)
+                
         logger.debug('Student export file: {}'.format(studentexport))
 
         # read the studentexport text file into a csv object
@@ -1136,32 +1140,43 @@ def main():
                 for row in csvreader:
                     studentexport_csv.append(row)
         except (OSError, IOError) as e:
-            logging.critical('error reading file: {}\n{}'.format(studentexport,e))
-            print 'Could not read file: {}; exiting.'.format(studentexport)
-            doExit(testing=testing)
+            logging.warn('error reading file: {}\n{}'.format(studentexport,e))
+            print 'Could not read file: {}'.format(studentexport)
+            print 'please try a different file or download a new student.export file before trying again'
+            # give user a chance to try again
+            studentexport = None
+            continue
+#             doExit(testing=testing)
 
         # parse and check validity of student export file
         expected_headers = ['ClassOf', 'Student_Number', 'LastFirst']
         headerMap = mapHeaders(file_csv=studentexport_csv, expected_headers=expected_headers)
-
+    
         if not headerMap or (len(headerMap['headers']) != len(expected_headers)):
-            logging.error('cannot continue without valid header map; exiting')
+            logging.warn('cannot continue without valid header map')
             print('file: {} appears to not contain the expected header row (in any order): {}'.format(studentexport, expected_headers))
             if headerMap['missingheaders']:
                 print('your file appears to be missing the field(s): {}'.format(headerMap['missingheaders']))
-            print('please try to download a new student.export file before trying again; exiting')
-            doExit(testing=testing)
+            print 'please try a different file or download a new student.export file before trying again'
+#             doExit(testing=testing)
+            studentexport = None
+            continue
 
         logger.debug('asking to proceed with current configuration')
-        print '\n*** Curent Configuration: ***'
+        
+        # config variables to print to screen for user:
+        config_print = ['useremail', 'teamdrivename', 'foldername', 'studentexport']
+        print '\n*** Curent Configuration to Use: ***'
         for section in myConfig.sections():
-            print '[{}]'.format(section)
+#             print '[{}]'.format(section)
             for option in myConfig.options(section):
-                print '{} = {}'.format(option, myConfig.get(section, option))
+                if option in config_print:
+                    print '{} = {}'.format(option, myConfig.get(section, option))
 
-        print '\n\nWould you like to proceed with the configuration above?'
-        choices = {'Yes - Proceed': (True, False), 'No - Reconfigure': (False, True), 'Quit': True} 
-        myChoice = prompts.prompt_for_choice(sorted(choices.keys()), padding=True, default='Yes - Proceed')
+        print '\nWould you like to proceed with the configuration above?'
+        choices = {'Yes - Proceed with creating folders': (True, False), 'No - Reconfigure my settings': (False, True), 'Quit': True} 
+        
+        myChoice = prompts.prompt_for_choice(sorted(choices.keys()), padding=True)
 
         if myChoice is 'Quit':
             doExit(testing=testing)
@@ -1187,40 +1202,23 @@ def main():
         print ('Please run this program again with the same student list. Only missing folders will be created.')
         print ('If errors persist, please check the logs: {}'.format(log_files))
 
+    # add the time and date to the filename
     studentCSVoutput_path = studentCSVoutput_path.format(datetime.datetime.now()) 
-    if not writeCSV(output_path=studentCSVoutput_path, studentFolders=studentFolders):
-        logger.error('failed to write CSV.')
-        print ('Writing PowerSchool CSV ouptut failed. Please run this program again.')
+    # use a tab delimiter and extension of .txt for powerschool with no quotes. It is dumb.
+    if not writeCSV(output_path=studentCSVoutput_path,
+                    studentFolders=studentFolders):
+        logger.error('failed to write TSV file: {}'.format(studentCSVoutput_path))
+        print ('Writing PowerSchool TSV ouptut failed. Please run this program again.')
         print ('If this error persists please check the logs: {}'.format(log_files))
     else:
-        print ('Completed! Please send the CSV output file ({}) to the PowerSchool Administrator'.format(studentCSVoutput_path))
+        print ('Completed! Please send the TSV output file ({}) to the PowerSchool Administrator'.format(studentCSVoutput_path))
         
         # get input from the user to hold the window open when run from Finder
-
-
-# In[62]:
-
-
-if __name__=='__main__':
-    main()
-
-
-# In[58]:
-
-
-# about = resource_path('./resources/about.txt')
-# about_list = fileToList(about, False)
-# # wrapper = textwrap.TextWrapper(replace_whitespace=True, drop_whitespace=True, width=65)
-# for each in about_list:
-#     print '\n'.join(wrapper.wrap(text=each))
 
 
 # In[ ]:
 
 
-# see this to learn how to freeze and package this
-# https://hackernoon.com/the-one-stop-guide-to-easy-cross-platform-python-freezing-part-1-c53e66556a0a
-
-# think about better location for log files - app directory will be a mess when frozen.
-# figure out how to properly set the path from the logging configuration file
+if __name__=='__main__':
+    main()
 
