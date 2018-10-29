@@ -2,7 +2,7 @@
 
 # coding: utf-8
 
-# In[11]:
+# In[1]:
 
 
 import logging
@@ -34,7 +34,7 @@ from progressbar import ProgressBar, Bar, Counter, ETA,     AdaptiveETA, Percent
 #     cwd = os.getcwd()
 
 
-# In[12]:
+# In[2]:
 
 
 def resource_path(relative_path):
@@ -48,7 +48,7 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
-# In[13]:
+# In[3]:
 
 
 def setup_logging(
@@ -104,7 +104,7 @@ def setup_logging(
         
 
 
-# In[14]:
+# In[4]:
 
 
 def fileSearch(path = None, search = None):
@@ -131,7 +131,7 @@ def fileSearch(path = None, search = None):
         return([m.group(0) for l in allFiles for m in [regex.search(l)] if m])
 
 
-# In[15]:
+# In[5]:
 
 
 def getConfiguration(cfgfile):
@@ -180,7 +180,7 @@ def getConfiguration(cfgfile):
     return(config)
 
 
-# In[16]:
+# In[6]:
 
 
 def getTeamDrive(myDrive):
@@ -215,7 +215,7 @@ def getTeamDrive(myDrive):
     return(teamdrive)
 
 
-# In[17]:
+# In[7]:
 
 
 def getPortfolioFolder(myDrive, teamdriveID):
@@ -265,7 +265,7 @@ def getPortfolioFolder(myDrive, teamdriveID):
     
 
 
-# In[18]:
+# In[8]:
 
 
 def getPathfromList(list_path=['~/'], message='Choose from the paths below', default=None):
@@ -310,7 +310,7 @@ def getPathfromList(list_path=['~/'], message='Choose from the paths below', def
     return (searchPath) 
 
 
-# In[19]:
+# In[9]:
 
 
 def getFiles(path='~/', pattern='.*', ignorecase=True):
@@ -343,7 +343,7 @@ def getFiles(path='~/', pattern='.*', ignorecase=True):
     return(files)
 
 
-# In[20]:
+# In[10]:
 
 
 def chooseFile(path='~/', pattern='.*', ignorecase=True, 
@@ -371,7 +371,7 @@ def chooseFile(path='~/', pattern='.*', ignorecase=True,
         
 
 
-# In[21]:
+# In[11]:
 
 
 def fileToList(inputfile, stripWhitespace=True):
@@ -390,7 +390,7 @@ def fileToList(inputfile, stripWhitespace=True):
     return(lines)
 
 
-# In[22]:
+# In[12]:
 
 
 def checkFolder(folderID, myDrive):
@@ -432,7 +432,7 @@ def checkFolder(folderID, myDrive):
     return(isFolder, writeable, props)
 
 
-# In[23]:
+# In[13]:
 
 
 def mapHeaders(file_csv, expected_headers=[]):
@@ -473,7 +473,7 @@ def mapHeaders(file_csv, expected_headers=[]):
     return(headerMap)
 
 
-# In[24]:
+# In[14]:
 
 
 # mylogger = logging.getLogger(__name__)
@@ -481,7 +481,7 @@ def mapHeaders(file_csv, expected_headers=[]):
 # mapHeaders('/Users/aciuffo/Downloads/bad.student.export.text', ['classOf', 'FirstLast', 'Student_Number'])
 
 
-# In[25]:
+# In[15]:
 
 
 def doExit(exit_level=0, testing=False):
@@ -491,7 +491,7 @@ def doExit(exit_level=0, testing=False):
         sys.exit(0)    
 
 
-# In[26]:
+# In[16]:
 
 
 def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True):
@@ -584,7 +584,7 @@ def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True
     return(createdFolders)
 
 
-# In[59]:
+# In[17]:
 
 
 # studentexport = '/Users/aciuffo/Downloads/SHORT student.export (4).text'
@@ -596,7 +596,7 @@ def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True
 # studentexport_csv
 
 
-# In[60]:
+# In[18]:
 
 
 # # studentexport_csv
@@ -606,7 +606,7 @@ def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True
 # print studentexport_csv
 
 
-# In[67]:
+# In[24]:
 
 
 def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv, gradefolder_list, headerMap):
@@ -659,7 +659,7 @@ def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv
 
     # clear out empty or malformed lines in student export csv
     # slice containing only records that have the correct number of elements
-    studentexport_csv[:] = [i for i in studentexport_csv if len(i) >= len(headers['headers'])]
+    studentexport_csv[:] = [i for i in studentexport_csv if len(i) >= len(headerMap['headers'])]
 
     
     
@@ -812,7 +812,7 @@ def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv
     return(studentFolders)
 
 
-# In[64]:
+# In[20]:
 
 
 def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv'):
@@ -856,7 +856,7 @@ def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv')
     return(output_path)
 
 
-# In[40]:
+# In[21]:
 
 
 # import csv
@@ -867,7 +867,7 @@ def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv')
 #         writer.writerow(each)
 
 
-# In[70]:
+# In[30]:
 
 
 def main():
@@ -1236,46 +1236,55 @@ def main():
         if myChoice is 'Quit':
             doExit(testing=testing)
         else:
+            # set proceed and reconfigure to the tuples in choices variable 
+            logging.debug('myChoice: {} -> {}'.format(myChoice, choices[myChoice]))
             proceed, reconfigure = choices[myChoice]
 
-    # # start processing the student export file
-        studentFolders = createPortfolioFolders(myDrive, parentFolder=folderID, teamdriveID=teamdriveID, 
-                                          studentexport_csv=studentexport_csv, headerMap=headerMap,
-                                          gradefolder_list=gradefolder_list)
+        if proceed:
+        # # start processing the student export file
+            studentFolders = createPortfolioFolders(myDrive, parentFolder=folderID, teamdriveID=teamdriveID, 
+                                              studentexport_csv=studentexport_csv, headerMap=headerMap,
+                                              gradefolder_list=gradefolder_list)
 
-        if not studentFolders:
-            logger.debug('no folders created; trying again')
-            continue
-
-
-        for eachStudent in studentFolders:
-            if not studentFolders[eachStudent]:
-                failures.append(eachStudent)
-                2
-
-        if len(failures) > 0:
-            logger.warn('{} students not processed due to previous errors'.format(len(failures)))
-            print ('{} students were not processed due to errors. Please run this batch again. Only missing folders will be created.'.format(len(failures)))
-            print ('The following students associated with the student numbers below had problems:')
-            print failures
-            print ('Please run this program again with the same student list. Only missing folders will be created.')
-            print ('If errors persist, please check the logs: {}'.format(log_files))
-
-        # add the time and date to the filename
-        studentCSVoutput_path = studentCSVoutput_path.format(datetime.datetime.now()) 
-        # use a tab delimiter and extension of .txt for powerschool with no quotes. It is dumb.
-        if not writeCSV(output_path=studentCSVoutput_path,
-                        studentFolders=studentFolders):
-            logger.error('failed to write TSV file: {}'.format(studentCSVoutput_path))
-            print ('Writing PowerSchool TSV ouptut failed. Please run this program again.')
-            print ('If this error persists please check the logs: {}'.format(log_files))
-        else:
-            print ('Completed! Please send the TSV output file ({}) to the PowerSchool Administrator'.format(studentCSVoutput_path))
-
-            # get input from the user to hold the window open when run from Finder
+            if not studentFolders:
+                logger.debug('no folders created; trying again')
+        #         continue
 
 
-# In[72]:
+            for eachStudent in studentFolders:
+                if not studentFolders[eachStudent]:
+                    failures.append(eachStudent)
+                    2
+
+            if len(failures) > 0:
+                logger.warn('{} students not processed due to previous errors'.format(len(failures)))
+                print ('{} students were not processed due to errors. Please run this batch again. Only missing folders will be created.'.format(len(failures)))
+                print ('The following students associated with the student numbers below had problems:')
+                print failures
+                print ('Please run this program again with the same student list. Only missing folders will be created.')
+                print ('If errors persist, please check the logs: {}'.format(log_files))
+
+            # add the time and date to the filename
+            studentCSVoutput_path = studentCSVoutput_path.format(datetime.datetime.now()) 
+            # use a tab delimiter and extension of .txt for powerschool with no quotes. It is dumb.
+            if not writeCSV(output_path=studentCSVoutput_path,
+                            studentFolders=studentFolders):
+                logger.error('failed to write TSV file: {}'.format(studentCSVoutput_path))
+                print ('Writing PowerSchool TSV ouptut failed. Please run this program again.')
+                print ('If this error persists please check the logs: {}'.format(log_files))
+            else:
+                print ('Completed! Please send the TSV output file ({}) to the PowerSchool Administrator'.format(studentCSVoutput_path))
+
+                # get input from the user to hold the window open when run from Finder
+            if prompts.prompt_for_confirmation(question='Process another file?'):
+                proceed = False
+                studentexport = False
+            else:
+                print 'exiting'
+                break
+
+
+# In[31]:
 
 
 
