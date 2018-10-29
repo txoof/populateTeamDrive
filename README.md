@@ -2,9 +2,9 @@ portfolioCreator
 ======
 The portfolio creator script creates an empty set of folders for students on Google Team Drive using the [Google Drive REST API V3](https://developers.google.com/drive/api/v3/reference/) using OAuth authentication via a local web browser.
 
-The project depends on credentials (client_secrets.json) file tied to a particular google drive account. Should the included client_secrets.json stop working, a new secret can be generated using the instructions below from any Google Suite (formerly Google Apps for Education) account.
+The project depends on credentials (client_secrets.json) file tied to a particular google drive account. Should the included client_secrets.json stop working, a new secret can be generated using the instructions below from any Google Suite (formerly Google Apps for Education) account. The script should be [rebuilt according to the instructions below](#building).
 
-  * [Usage Instructions](#usage-instructions)
+  * [Usage Instructions (creating new cummulative/portfolio folders)](#usage-instructions)
     * [Prepare Student\.Export\.text file](#prepare-studentexporttext-file)
       * [Required Quick Export Fields (any additional fields are ignored):](#required-quick-export-fields-any-additional-fields-are-ignored)
       * [Quick Export Settings](#quick-export-settings)
