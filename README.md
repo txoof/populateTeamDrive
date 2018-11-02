@@ -65,6 +65,7 @@ Use the keyboard to interact with the application by typing your choice and pres
 #### Application Instructions
 ##### First Run
 * The first time the application runs it will attempt to run a setup and authenticate with Google Drive. Please make sure you are signed in to a web browser with an account that can access Team Drive where portfolio folders will be stored.
+
 * When prompted, select the account that should be used to access the Google Team Drive
 ![Account Selection](./documentation/SelectAccount.png "Account Selection")
 
@@ -78,7 +79,8 @@ Use the keyboard to interact with the application by typing your choice and pres
 
 ##### Normal Use
 After the application has been configured the first time, it will only prompt for student.export.text files and not require reconfiguration.
-* The applicaiton will ask for the folder that contains your student.export.text files - the default choice is your Downloads folder. You can choose from the suggested locations or choose to type a specific location by choosing 'OTHER' from the list.
+- The applicaiton will ask for the folder that contains your student.export.text files - the default choice is your Downloads folder. You can choose from the suggested locations or choose to type a specific location by choosing 'OTHER' from the list.
+
 ![Choose Folder](./documentation/ChooseFolder.png "Choose Folder")
 
 * Choose a student.export.text file generated in the [previous section](#prepare-studentexporttext-file)
