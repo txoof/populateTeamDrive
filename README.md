@@ -67,10 +67,13 @@ Use the keyboard to interact with the application by typing your choice and pres
 * The first time the application runs it will attempt to run a setup and authenticate with Google Drive. Please make sure you are signed in to a web browser with an account that can access Team Drive where portfolio folders will be stored.
 * When prompted, select the account that should be used to access the Google Team Drive
 ![Account Selection](./documentation/SelectAccount.png "Account Selection")
-The next step is to allow the application access to your Google Drive:
+
+* The next step is to allow the application access to your Google Drive:
 ![Allow Access](./documentation/AllowAccess.png "Allow Access")
+
 * Return to the application window (⌘ + ⇥) and select the appropriate Google Team Drive by typing the name or selecting the number from the list.
 ![Select Team Drive](./documentation/SelectTeamDrive.png "Select Team Drive)
+
 * The application will then search for an existing folder where cumulative folders will be stored. Type a portion of the folder name (case insensitive) to locate the folder: ` Please enter a portion of the portfolio folder name (case insensitive): cumulative` The application will attempt to find the approriate folder. If it cannot determine the correct folder, it will ask for help in determining the approriate folder.
 
 ##### Normal Use
