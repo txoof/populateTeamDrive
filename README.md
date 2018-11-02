@@ -9,7 +9,7 @@ The project depends on credentials (client_secrets.json) file tied to a particul
       * [Required Quick Export Fields (any additional fields are ignored):](#required-quick-export-fields-any-additional-fields-are-ignored)
       * [Quick Export Settings](#quick-export-settings)
       * [Quick Export Sample Settings](#quick-export-sample-settings)
-    * [Execute Program](#execute-program)
+    * [Run The Application](#Run-the-application)
     * [Adding HTML to PowerSchool](#adding-html-to-powerschool)
   * [Building](#building)
     * [Requirements](#requirements)
@@ -80,22 +80,20 @@ Use the keyboard to interact with the application by typing your choice and pres
 ##### Normal Use
 After the application has been configured the first time, it will only prompt for student.export.text files and not require reconfiguration.
 - The applicaiton will ask for the folder that contains your student.export.text files - the default choice is your Downloads folder. You can choose from the suggested locations or choose to type a specific location by choosing 'OTHER' from the list.
-
 ![Choose Folder](./documentation/ChooseFolder.png "Choose Folder")
 
 * Choose a student.export.text file generated in the [previous section](#prepare-studentexporttext-file)
 ![Choose Student Export](./documentation/ChooseExport.png "Choose Student Export")
 
 * Check that the configuration settings are OK and either choose to reconfigure the settings, quit or proceed.
-![Check Configuration](./documentaiton/CheckConfig.png "Check Configuration")
+![Check Configuration](./documentation/CheckConfig.png "Check Configuration")
 
-* The program will begin processing the student.export.text file. It will create all neeeded folders; it will not create any duplicates. This process can take a great deal of time. It is ok to leave this running in the background. No further input from you is needed.
+* The program will begin processing the student.export.text file. It will create all neeeded folders; it will not create any duplicates. This process can take a great deal of time for large student.export.text files. It is ok to leave this running in the background. No further input from you is needed.
 
-* Once the program completes execution, a TSV is prepared and written to the user's desktop. **This file should be shared with the powerschool administrator.** The TSV contains a link to each student's Portfolio folder on Google Team Drive
+* Once the program completes execution, a TSV is prepared and written to the desktop with the name: `Links_forPowreSchool_YYYY-MM-DD.tsv.txt`. **This file should be shared with the powerschool administrator.** The TSV contains a link to each student's Portfolio folder on Google Team Drive
 
 ### Adding HTML to PowerSchool
 See BA for instructions
-
 
 Building
 --------
