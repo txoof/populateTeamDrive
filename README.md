@@ -78,8 +78,8 @@ Use the keyboard to interact with the application by typing your choice and pres
 
 ##### Normal Use
 After the application has been configured the first time, it will only prompt for student.export.text files and not require reconfiguration.
-* The applicaiton will ask for the folder that contains your student.export.text files - the default choice is your Downloads folder. You can choose from the suggested locations or choose to type a specific location by choosing OTHER.
-![Choose folder](./documentation/ChooseFolder.png "Choose Folder")
+* The applicaiton will ask for the folder that contains your student.export.text files - the default choice is your Downloads folder. You can choose from the suggested locations or choose to type a specific location by choosing 'OTHER' from the list.
+![Choose Folder](./documentation/ChooseFolder.png "Choose Folder")
 
 * Choose a student.export.text file generated in the [previous section](#prepare-studentexporttext-file)
 ![Choose Student Export](./documentation/ChooseExport.png "Choose Student Export")
