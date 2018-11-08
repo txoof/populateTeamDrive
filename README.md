@@ -1,8 +1,6 @@
 portfolioCreator
 ======
-The portfolio creator script creates an empty set of folders for students on Google Team Drive using the [Google Drive REST API V3](https://developers.google.com/drive/api/v3/reference/) using OAuth authentication via a local web browser.
-
-The project depends on credentials (client_secrets.json) file tied to a particular google drive account. Should the included client_secrets.json stop working, a new secret can be generated using the instructions below from any Google Suite (formerly Google Apps for Education) account. The script should be [rebuilt according to the instructions below](#building).
+The portfolio creator script creates an empty set of folders for students on Google Team Drive.
 
   * [Usage Instructions (creating new cummulative/portfolio folders)](#usage-instructions)
     * [Prepare Student\.Export\.text file](#prepare-studentexporttext-file)
@@ -118,10 +116,14 @@ Required python modules for building a single package distribution
  #### Create a virtual environment
  * `$ mkvirtualenv python2.7`
  * ` pip install pyinstaller humanfriendly httplib2 google_api_python_client progressbar`
+ * Clone this repo: `git clone https://github.com/txoof/populateTeamDrive`
+
 
 ### Preparing to Build
-Make sure a valid and functioning client_secrets.json file is available in the ./resrources directory
-[Complete Instructions for OAuth2 Installed Applications](https://developers.google.com/identity/protocols/OAuth2InstalledApp) file
+The application uses the [Google Drive REST API V3](https://developers.google.com/drive/api/v3/reference/) using OAuth authentication via a local web browser.
+
+The application depends on a credentials (client_secrets.json) file tied to a particular google drive account. Should the included client_secrets.json stop working, a new secret can be generated using the instructions below from any Google Suite (formerly Google Apps for Education) account. The script should be rebuilt according to the instructions below with the updated client_secrets.json. See these [Instructions for creating a cleint_secrets file for OAuth2 Installed Applications](https://developers.google.com/identity/protocols/OAuth2InstalledApp)
+
 #### Generate a client_secrets.json
 * Visit [Google API Console](https://console.developers.google.com/projectcreate)
     - Give the project a name `Portfolio Creator` and click "Create"
