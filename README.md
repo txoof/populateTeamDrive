@@ -1,8 +1,6 @@
 portfolioCreator
 ======
-The portfolio creator script creates an empty set of folders for students on Google Team Drive using the [Google Drive REST API V3](https://developers.google.com/drive/api/v3/reference/) using OAuth authentication via a local web browser.
-
-The project depends on credentials (client_secrets.json) file tied to a particular google drive account. Should the included client_secrets.json stop working, a new secret can be generated using the instructions below from any Google Suite (formerly Google Apps for Education) account. The script should be [rebuilt according to the instructions below](#building).
+The portfolio creator script creates an empty set of folders for students on Google Team Drive.
 
   * [Usage Instructions (creating new cummulative/portfolio folders)](#usage-instructions)
     * [Prepare Student\.Export\.text file](#prepare-studentexporttext-file)
@@ -90,7 +88,7 @@ After the application has been configured the first time, it will only prompt fo
 
 * The program will begin processing the student.export.text file. It will create all neeeded folders; it will not create any duplicates. This process can take a great deal of time for large student.export.text files. It is ok to leave this running in the background. No further input from you is needed.
 
-* Once the program completes execution, a TSV is prepared and written to the desktop with the name: `Links_forPowreSchool_YYYY-MM-DD.tsv.txt`. **This file should be shared with the powerschool administrator.** The TSV contains a link to each student's Portfolio folder on Google Team Drive
+* Once the program completes execution a the file containing the links to the student portfolio folders (TSV) is prepared and written to the desktop with the name: `Links_forPowreSchool_YYYY-MM-DD.tsv.txt`. **This file should be shared with the powerschool administrator.** The TSV contains a link to each student's Portfolio folder on Google Team Drive.
 
 ### Adding HTML to PowerSchool
 See BA for instructions
@@ -118,10 +116,14 @@ Required python modules for building a single package distribution
  #### Create a virtual environment
  * `$ mkvirtualenv python2.7`
  * ` pip install pyinstaller humanfriendly httplib2 google_api_python_client progressbar`
+ * Clone this repo: `git clone https://github.com/txoof/populateTeamDrive`
+
 
 ### Preparing to Build
-Make sure a valid and functioning client_secrets.json file is available in the ./resrources directory
-[Complete Instructions for OAuth2 Installed Applications](https://developers.google.com/identity/protocols/OAuth2InstalledApp) file
+The application uses the [Google Drive REST API V3](https://developers.google.com/drive/api/v3/reference/) using OAuth authentication via a local web browser.
+
+The application depends on a credentials (client_secrets.json) file tied to a particular google drive account. Should the included client_secrets.json stop working, a new secret can be generated using the instructions below from any Google Suite (formerly Google Apps for Education) account. The script should be rebuilt according to the instructions below with the updated client_secrets.json. See these [Instructions for creating a cleint_secrets file for OAuth2 Installed Applications](https://developers.google.com/identity/protocols/OAuth2InstalledApp)
+
 #### Generate a client_secrets.json
 * Visit [Google API Console](https://console.developers.google.com/projectcreate)
     - Give the project a name `Portfolio Creator` and click "Create"
