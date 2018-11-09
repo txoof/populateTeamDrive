@@ -23,16 +23,6 @@ from gdrive.gdrive import googledrive, GDriveError
 from humanfriendly import prompts
 from progressbar import ProgressBar, Bar, Counter, ETA,     AdaptiveETA, Percentage
 
-# get the current working directory
-# When launching a .command from the OS X Finder, the working directory is typically ~/; this is problematic
-# for locating resource files
-# I don't love this hack, but it works.
-# try:
-#     __file__
-#     cwd = os.path.dirname(__file__)+'/'
-# except NameError as e:
-#     cwd = os.getcwd()
-
 
 # In[2]:
 
@@ -509,6 +499,7 @@ def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True
                ' Processed ', Counter(),
                ' ', AdaptiveETA()]
     
+    folder_check = None
     try:
         folder_check = checkFolder(parentFolder, myDrive)
     except GDriveError as e:
@@ -606,7 +597,7 @@ def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True
 # print studentexport_csv
 
 
-# In[24]:
+# In[19]:
 
 
 def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv, gradefolder_list, headerMap):
@@ -867,7 +858,7 @@ def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv')
 #         writer.writerow(each)
 
 
-# In[30]:
+# In[47]:
 
 
 def main():
@@ -884,6 +875,10 @@ def main():
     
     # set the color for human friendly 
     os.environ['HUMANFRIENDLY_HIGHLIGHT_COLOR'] = 'green'
+
+    # set the terminal dimensions
+    sys.stdout.write("\x1b[8;{rows};{cols}t".format(rows=50, cols=100))
+
     
     logging.info('===Starting {} Log==='.format(appName))
 
@@ -1284,8 +1279,7 @@ def main():
                 break
 
 
-# In[31]:
-
+# In[48]:
 
 
 if __name__=='__main__':
