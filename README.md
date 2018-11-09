@@ -88,7 +88,7 @@ After the application has been configured the first time, it will only prompt fo
 
 * The program will begin processing the student.export.text file. It will create all neeeded folders; it will not create any duplicates. This process can take a great deal of time for large student.export.text files. It is ok to leave this running in the background. No further input from you is needed.
 
-* Once the program completes execution, a TSV is prepared and written to the desktop with the name: `Links_forPowreSchool_YYYY-MM-DD.tsv.txt`. **This file should be shared with the powerschool administrator.** The TSV contains a link to each student's Portfolio folder on Google Team Drive
+* Once the program completes execution a the file containing the links to the student portfolio folders (TSV) is prepared and written to the desktop with the name: `Links_forPowreSchool_YYYY-MM-DD.tsv.txt`. **This file should be shared with the powerschool administrator.** The TSV contains a link to each student's Portfolio folder on Google Team Drive.
 
 ### Adding HTML to PowerSchool
 See BA for instructions
