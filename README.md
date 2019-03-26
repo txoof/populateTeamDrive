@@ -8,6 +8,8 @@ The portfolio creator script creates an empty set of folders for students on Goo
       * [Quick Export Settings](#quick-export-settings)
       * [Quick Export Sample Settings](#quick-export-sample-settings)
     * [Run The Application](#Run-the-application)
+      * [First Time Run](#First-Run)
+      * [Normal Use](#Normal-Use)
     * [Adding HTML to PowerSchool](#adding-html-to-powerschool)
   * [Building](#building)
     * [Requirements](#requirements)
