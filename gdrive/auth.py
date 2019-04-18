@@ -1,16 +1,36 @@
 #!/usr/bin/env ipython
-
+#!/usr/bin/env python
 # coding: utf-8
 
-# In[36]:
+
+# In[13]:
+
+
+#get_ipython().magic(u"alias nbconvert '/Users/aciuffo/bin/develtools/nbconvert ./auth.ipynb'")
+
+
+
+
+# In[14]:
+
+
+#get_ipython().magic(u'nbconvert')
+
+
+
+
+# In[7]:
+
 
 import logging
 import os
 
-from oauth2client import file, client, tools
-from oauth2client.file import Storage
-import httplib2
+import google_auth_oauthlib
+import google_auth_httplib2
 
+# from oauth2client import file, client, tools
+# from oauth2client.file import Storage
+# import httplib2
 
 def getCredentials(storage_path = os.path.expanduser('./'), 
                    client_secret = './client_secrets.json'):
@@ -64,4 +84,5 @@ def getCredentials(storage_path = os.path.expanduser('./'),
         
     
     return(creds)
+
 
