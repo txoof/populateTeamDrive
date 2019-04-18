@@ -1,17 +1,36 @@
 #!/usr/bin/env ipython
-
+#!/usr/bin/env python
 # coding: utf-8
 
-# In[21]:
+
+# In[2]:
+
+
+#get_ipython().magic(u'alias nbconvert nbconvert configuration.ipynb')
+
+
+
+
+# In[7]:
+
+
+#get_ipython().magic(u'nbconvert')
+
+
+
+
+# In[1]:
 
 
 import logging
-import ConfigParser
-from ConfigParser import NoOptionError
+import configparser
+from configparser import NoOptionError
 import os
 
 
-# In[22]:
+
+
+# In[6]:
 
 
 # borrowed from: https://www.blog.pythonlibrary.org/2013/10/25/python-101-an-intro-to-configparser/
@@ -48,7 +67,7 @@ def get_config(path):
     logger = logging.getLogger(__name__)
     cfgfile = os.path.expanduser(path)
     cfgpath = os.path.dirname(os.path.expanduser(path))
-    config = ConfigParser.SafeConfigParser()
+    config = configparser.SafeConfigParser()
 
     if not os.path.isfile(cfgfile):
         logger.warn('no configuration file found at: {}'.format(cfgfile))
@@ -88,5 +107,5 @@ def get_setting(path, section, setting):
 #             config.write(config_file)
 #     except Exception as e:
 #         logging.error(e)
-    
+
 

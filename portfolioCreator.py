@@ -1,8 +1,28 @@
 #!/usr/bin/env ipython
-
+#!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+
+# In[8]:
+
+
+#get_ipython().magic(u'load_ext autoreload')
+#get_ipython().magic(u'autoreload 2')
+
+#get_ipython().magic(u'alias nbconvert nbconvert portfolioCreator.ipynb')
+
+
+
+
+# In[6]:
+
+
+#get_ipython().magic(u'nbconvert')
+
+
+
+
+# In[10]:
 
 
 import logging
@@ -24,7 +44,9 @@ from humanfriendly import prompts
 from progressbar import ProgressBar, Bar, Counter, ETA,     AdaptiveETA, Percentage
 
 
-# In[2]:
+
+
+# In[11]:
 
 
 def resource_path(relative_path):
@@ -38,7 +60,9 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
-# In[3]:
+
+
+# In[13]:
 
 
 def setup_logging(
@@ -60,14 +84,14 @@ def setup_logging(
             with open(path, 'rt') as f:
                 config = json.load(f)
         except Exception as e:
-            print 'failed to read logging configuration'
+            print('failed to read logging configuration')
             return(None)
 
         # set the specific path to store log files
         if config:
             if output_path:
                 for handler in config['handlers']:
-                    if config['handlers'][handler].has_key('filename'):
+                    if 'filename' in config['handlers'][handler]:
                         logFile = os.path.basename(config['handlers'][handler]['filename'])
                         logPath = os.path.expanduser(output_path+'/')
 
@@ -91,7 +115,8 @@ def setup_logging(
     else:
         logging.basicConfig(level=default_level)
         return(None)
-        
+
+
 
 
 # In[4]:
@@ -121,6 +146,8 @@ def fileSearch(path = None, search = None):
         return([m.group(0) for l in allFiles for m in [regex.search(l)] if m])
 
 
+
+
 # In[5]:
 
 
@@ -143,13 +170,13 @@ def getConfiguration(cfgfile):
 
     update_config = False
 
-    for section, values in config_required.items():
+    for section, values in list(config_required.items()):
         if not config.has_section(section):
             logger.warn('section: {} not found in {}'.format(section, cfgfile))
             logger.debug('adding section {}'.format(section))
             config.add_section(section)
             update_config = True
-        for option, value in values.items():
+        for option, value in list(values.items()):
             if not config.has_option(section, option):
                 logger.warn('option: {} not found in {}'.format(option, cfgfile))
                 logger.debug('adding option {}: {}'.format(option, value))
@@ -168,6 +195,8 @@ def getConfiguration(cfgfile):
             logger.error(e)
             
     return(config)
+
+
 
 
 # In[6]:
@@ -195,7 +224,7 @@ def getTeamDrive(myDrive):
     
     teamdrive = None
     
-    print 'Please seledct a Team Drive for storing Portfolio folders from the list below:'
+    print('Please seledct a Team Drive for storing Portfolio folders from the list below:')
     try:
         teamdrive_name = prompts.prompt_for_choice(choices=sorted(teamdrives_writeable.keys()), default=None)
         teamdrive=teamdrives_writeable[teamdrive_name]
@@ -203,6 +232,8 @@ def getTeamDrive(myDrive):
         logger.warning('user failed to make a choice')
     
     return(teamdrive)
+
+
 
 
 # In[7]:
@@ -225,12 +256,12 @@ def getPortfolioFolder(myDrive, teamdriveID):
         foldersearch = prompts.prompt_for_input(question='Please enter a portion of the portfolio folder name (case insensitive): ',
                                                 default=None, strip=True)
         if len(foldersearch) <= 0:
-            print 'Nothing entered. {} attempts remain.'.format(attempt)
+            print('Nothing entered. {} attempts remain.'.format(attempt))
             
         searchresult = myDrive.search(name=foldersearch, fuzzy=True, teamdrive = teamdriveID, mimeType='folder')
         if len(searchresult['files']) <= 0:
-            print 'No folders contained "{}"'.format(foldersearch)
-            print 'Please try entering only part of the folder name'
+            print('No folders contained "{}"'.format(foldersearch))
+            print('Please try entering only part of the folder name')
             foldersearch = ''
             
     
@@ -244,7 +275,7 @@ def getPortfolioFolder(myDrive, teamdriveID):
     for each in searchresult['files']:
         foldernames.append(each['name'])
     
-    print 'Please select the folder that contains the Portfolio Folders'
+    print('Please select the folder that contains the Portfolio Folders')
     try:
         foldername = prompts.prompt_for_choice(choices=foldernames)
     except prompts.TooManyInvalidReplies as e:
@@ -252,7 +283,8 @@ def getPortfolioFolder(myDrive, teamdriveID):
         return(None)
     
     return(searchresult['files'][foldernames.index(foldername)])
-    
+
+
 
 
 # In[8]:
@@ -280,7 +312,7 @@ def getPathfromList(list_path=['~/'], message='Choose from the paths below', def
         default = None
     
     if message:
-        print message
+        print(message)
     searchPath = prompts.prompt_for_choice(choices=list_path, default=default)
     logger.debug('searchPath = {}'.format(searchPath))
     
@@ -297,7 +329,9 @@ def getPathfromList(list_path=['~/'], message='Choose from the paths below', def
     
     if len(searchPath) < 1:
         searchPath = None
-    return (searchPath) 
+    return (searchPath)
+
+
 
 
 # In[9]:
@@ -333,6 +367,8 @@ def getFiles(path='~/', pattern='.*', ignorecase=True):
     return(files)
 
 
+
+
 # In[10]:
 
 
@@ -352,13 +388,14 @@ def chooseFile(path='~/', pattern='.*', ignorecase=True,
     filelist = getFiles(path=path, pattern=pattern, ignorecase=ignorecase)
     if len(filelist) >= 1:
         logger.debug('filelist: {}'.format(filelist))
-        print message
+        print(message)
         selection = prompts.prompt_for_choice(choices=filelist)
         return(selection)
     else:
         logger.warn('no files matching pattern ({}) at location: {}'.format(pattern, path))
         return(None)
-        
+
+
 
 
 # In[11]:
@@ -372,12 +409,14 @@ def fileToList(inputfile, stripWhitespace=True):
     try:
         with open(inputfile, 'r') as fhandle:
             if stripWhitespace:
-                lines = filter(None, (line.strip() for line in fhandle))
+                lines = [_f for _f in (line.strip() for line in fhandle) if _f]
             else:
                 lines = [line.strip() for line in fhandle]
     except IOError as e:
         logger.debug(e)
     return(lines)
+
+
 
 
 # In[12]:
@@ -422,6 +461,8 @@ def checkFolder(folderID, myDrive):
     return(isFolder, writeable, props)
 
 
+
+
 # In[13]:
 
 
@@ -463,12 +504,16 @@ def mapHeaders(file_csv, expected_headers=[]):
     return(headerMap)
 
 
+
+
 # In[14]:
 
 
 # mylogger = logging.getLogger(__name__)
 # mylogger.setLevel(logging.DEBUG)
 # mapHeaders('/Users/aciuffo/Downloads/bad.student.export.text', ['classOf', 'FirstLast', 'Student_Number'])
+
+
 
 
 # In[15]:
@@ -478,7 +523,9 @@ def doExit(exit_level=0, testing=False):
     logger = logging.getLogger(__name__)
     logger.info('exiting before completion with exit code {}'.format(exit_level))
     if not testing:
-        sys.exit(0)    
+        sys.exit(0)
+
+
 
 
 # In[16]:
@@ -520,7 +567,7 @@ def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True
         pbar = ProgressBar(widgets=widgets, maxval=len(folderList))
         pbar.start()
         pbar_index = 0
-        print 'Processing {} folders'.format(len(folderList))
+        print('Processing {} folders'.format(len(folderList)))
 
     for folder in folderList:
         # update the progress bar
@@ -545,7 +592,7 @@ def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True
             logger.error('skipping folder: {}'.format(folder))
             continue
         
-        if result.has_key('files'): 
+        if 'files' in result: 
             if len(result['files']) > 0:
                 logger.debug('folder already exists, do not create')
                 createFolder = False
@@ -570,9 +617,11 @@ def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True
             
     if progressbar:
         pbar.finish()
-        print 'Completed\n'
+        print('Completed\n')
     
     return(createdFolders)
+
+
 
 
 # In[17]:
@@ -587,6 +636,8 @@ def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True
 # studentexport_csv
 
 
+
+
 # In[18]:
 
 
@@ -595,6 +646,8 @@ def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True
 # # somelist[:] = [x for x in somelist if not determine(x)]
 # studentexport_csv[:] = [i for i in studentexport_csv if len(i) >= len(headers['headers'])]
 # print studentexport_csv
+
+
 
 
 # In[19]:
@@ -683,10 +736,10 @@ def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv
     # check for existence of Class Of folders and create if they are missing
     logger.debug('checking for existing "Class Of" folders in google drive')
     
-    print 'Checking for or creating {} "Class Of-" folders in portfolio folder'.format(len(classOfFolders))
+    print('Checking for or creating {} "Class Of-" folders in portfolio folder'.format(len(classOfFolders)))
     classOfFolders = createFolders(myDrive=myDrive, parentFolder=parentFolder, 
                                    teamdrive=teamdriveID,
-                                   folderList=[value.get('name') for key, value in classOfFolders.items()])
+                                   folderList=[value.get('name') for key, value in list(classOfFolders.items())])
     
         
         
@@ -698,7 +751,7 @@ def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv
     # check for existence of Class Of folders and create if they are missing
     logger.debug('checking for existing student folders in google drive')
 
-    print 'Checking for or creating {} student folders in portfolio folder'.format(len(studentexport_csv)-1)
+    print('Checking for or creating {} student folders in portfolio folder'.format(len(studentexport_csv)-1))
     
 
     # init progress bar for student of folders 
@@ -744,7 +797,7 @@ def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv
             logger.error('skipping folder: {}'.format(folder_name))
             continue
         
-        if result.has_key('files'): 
+        if 'files' in result: 
             if len(result['files']) > 0:
                 logger.debug('folder already exists, do not create')
                 createFolder = False
@@ -798,9 +851,11 @@ def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv
 
     # finish updating the pbar for Class Of- Folders
     pbar.finish()
-    print 'Completed\n'
+    print('Completed\n')
         
     return(studentFolders)
+
+
 
 
 # In[20]:
@@ -823,7 +878,7 @@ def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv')
         if studentFolders[student]:
             thisStudent = []
             for header in csvHeaders:
-                if studentFolders[student].has_key(header):
+                if header in studentFolders[student]:
                     if header == 'webViewLink':
                         thisStudent.append(htmlFormat.format(studentFolders[student][header]))
                     else:
@@ -847,6 +902,8 @@ def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv')
     return(output_path)
 
 
+
+
 # In[21]:
 
 
@@ -856,6 +913,8 @@ def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv')
 #     writer = csv.writer(f, quoting = csv.QUOTE_NONE, delimiter='\t')
 #     for each in my_list:
 #         writer.writerow(each)
+
+
 
 
 # In[47]:
@@ -902,7 +961,7 @@ def main():
     # get the log file names
     log_files = []
     for handlers in logger.root.handlers:
-        if 'FileHandler' in str(handlers.format.im_class):
+        if 'FileHandler' in str(handlers.format.__self__.__class__):
             log_files.append(handlers.baseFilename)
 
     # set the base path for the output file
@@ -974,13 +1033,13 @@ def main():
     about = resource_path('./resources/about.txt')
     about_list = fileToList(about, False)
     wrapper = textwrap.TextWrapper(replace_whitespace=True, drop_whitespace=True, width=65)
-    print '{} - Version: {}'.format(appName, version)
+    print('{} - Version: {}'.format(appName, version))
     for line in about_list:
-        print '\n'.join(wrapper.wrap(text=line))
+        print('\n'.join(wrapper.wrap(text=line)))
 
     # begin processing?
     if not prompts.prompt_for_confirmation(question='Would you like to proceed?', default=True):
-        print 'Exiting'
+        print('Exiting')
         doExit(testing=testing)
 
 
@@ -992,12 +1051,12 @@ def main():
         
         # set logging level
         if reconfigure:
-            print 'If you are having trouble with this program, adjust the logging level.'
-            print 'Log level is set to only show: {}'.format(loglevel)
+            print('If you are having trouble with this program, adjust the logging level.')
+            print('Log level is set to only show: {}'.format(loglevel))
             if prompts.prompt_for_confirmation(question='Change log level?', default=False):
                 loglevel_list = []
-                for k, v in sorted(logging._levelNames.iteritems()):
-                    if isinstance(v, basestring):
+                for k, v in sorted(logging._levelNames.items()):
+                    if isinstance(v, str):
                         loglevel_list.append(v)
                 
                 loglevel = prompts.prompt_for_choice(choices=loglevel_list, default='WARNING')
@@ -1010,7 +1069,7 @@ def main():
 
         # attempt to authorize using stored credentials or generate new credentials as needed 
         if reconfigure:
-            print 'Currently authenticated Google Drive user: {}'.format(useremail)
+            print('Currently authenticated Google Drive user: {}'.format(useremail))
             if prompts.prompt_for_confirmation(question='Reconfigure google drive user?', default=False):
                 for f in glob(credential_store+'/*.json'):
                     try:
@@ -1018,8 +1077,8 @@ def main():
                     except Exception as e:
                         logger.error(e)
                         logger.error('could not remove credential store at: {}'.format(credential_store))
-                        print 'Error removing stored credentials in folder {}'.format(credential_store)
-                        print 'Please try running this program again. If this message reappears check the logs: {}'.format(log_files)
+                        print('Error removing stored credentials in folder {}'.format(credential_store))
+                        print('Please try running this program again. If this message reappears check the logs: {}'.format(log_files))
                         doExit(testing=testing)
 
         # get or reset credentials
@@ -1037,9 +1096,9 @@ def main():
             myDrive = googledrive(credentials)
         except Exception as e:
             logger.error('Could not set up google drive connection: {}'.format(e))
-            print 'Could not setup google drive connection. Please run this program again.'
-            print 'If this error persists, please check the logs: {}'.format(log_files)
-            print 'cannot continue'
+            print('Could not setup google drive connection. Please run this program again.')
+            print('If this error persists, please check the logs: {}'.format(log_files))
+            print('cannot continue')
             doExit(testing=testing)
 
         if not useremail:
@@ -1048,15 +1107,15 @@ def main():
                 useremail = myDrive.userinfo['emailAddress']
             except Exception as e:
                 logging.error('Error retreving useremail address from drive configuration')
-                print 'Error fetching configuration information.'
-                print 'Please run the program again'
-                print 'If this error persists, please check the logs: {}'.format(log_files)
+                print('Error fetching configuration information.')
+                print('Please run the program again')
+                print('If this error persists, please check the logs: {}'.format(log_files))
                 doExit(testing=testing)
             myConfig.set('Main', 'useremail', useremail)
             updateConfig = True
 
         if reconfigure:
-            print 'Currently selected Team Drive: {}'.format(teamdriveName)
+            print('Currently selected Team Drive: {}'.format(teamdriveName))
             if prompts.prompt_for_confirmation(question='Reconfigure Team Drive?', default=False):
                 teamdriveID = None
                 teamdriveName = None
@@ -1076,7 +1135,7 @@ def main():
                 logger.error('no team drives found')
                 logger.error('userinfo: {}'.format(useremail))
                 print('No Team Drives located; cannot proceed.')
-                print('You are authenticated as: {}'.format(useremail))
+                print(('You are authenticated as: {}'.format(useremail)))
                 logger.error('exiting')
                 doExit(testing=testing)
 
@@ -1086,18 +1145,18 @@ def main():
             except (KeyError, TypeError) as e:
                 logger.error('no valid team drive information found: {}'.format(e))
                 logger.error('userinfo: {}'.format(useremail))
-                print 'No Team Drive was found. Do you have write access to a Team Drive with this account?'
-                print 'You are authenticated as: {}'.format(useremail)
+                print('No Team Drive was found. Do you have write access to a Team Drive with this account?')
+                print('You are authenticated as: {}'.format(useremail))
                 logger.error('exiting')
                 doExit(testing=testing)
 
-            print 'Using Team Drive: {}'.format(teamdriveName)    
+            print('Using Team Drive: {}'.format(teamdriveName))    
             myConfig.set('Main', 'teamdriveid', teamdriveID)
             myConfig.set('Main', 'teamdriveName', teamdriveName)
             updateConfig = True
 
         if reconfigure:
-            print 'Currently selected portfolio folder: {}'.format(folderName)
+            print('Currently selected portfolio folder: {}'.format(folderName))
             if prompts.prompt_for_confirmation(question='Reconfigure portfolio folder?', default=False):
                 folderName = None
                 folderID = None
@@ -1109,7 +1168,7 @@ def main():
             except GDriveError as e:
                 logger.error('Could not search for folder: {}'.format(e))
                 print ('There was a problem searching Team Drive for a folder')
-                print ('You are authenticated as: {}'.format(useremail))
+                print(('You are authenticated as: {}'.format(useremail)))
             try:
                 folderID = folder['id']
                 folderName = folder['name']
@@ -1118,7 +1177,7 @@ def main():
                 logger.error('exiting')
                 doExit(testing=testing)
 
-            print 'Using Folder: {} on Team Drive: {}'.format(folderName, teamdriveName)
+            print('Using Folder: {} on Team Drive: {}'.format(folderName, teamdriveName))
             myConfig.set('Main', 'foldername', folderName)
             myConfig.set('Main', 'folderid', folderID)
             updateConfig=True
@@ -1126,7 +1185,7 @@ def main():
         if not os.path.exists(gradefolders):
             logger.error('failed to locate {}'.format(gradefolders))
             logger.error('exiting')
-            print 'gradefolders.txt file is missing. Please reinstall the application.'
+            print('gradefolders.txt file is missing. Please reinstall the application.')
             doExit(testing=testing)
 
         # get the gradefolder file
@@ -1134,7 +1193,7 @@ def main():
 
         # check validity of gradefolder
         if len(gradefolder_list) < 1:
-            print 'grade folder file is corrupt. Please reinstall the application'
+            print('grade folder file is corrupt. Please reinstall the application')
             doExit(testing=testing)
 
 
@@ -1144,7 +1203,7 @@ def main():
     
         # allow reconfiguring selected student export file
         if reconfigure and studentexport:
-            print 'Currently selected student export file: {}'.format(studentexport)
+            print('Currently selected student export file: {}'.format(studentexport))
             if prompts.prompt_for_confirmation(question='Select new student export file', default=False):
                 studentexport = None            
         
@@ -1163,12 +1222,12 @@ def main():
             studentexport = chooseFile(path=studentexport_path, pattern='.*student.*export.*')
             # try again if nothing is returned
             if not studentexport:
-                print 'No student exports files found in folder: {}'.format(studentexport_path)
-                print 'please place a student export file in that folder or try an alternative location'
+                print('No student exports files found in folder: {}'.format(studentexport_path))
+                print('please place a student export file in that folder or try an alternative location')
                 continue
             logger.debug('student export file chosen: {}'.format(studentexport))
             if not os.access(studentexport, os.R_OK):
-                print 'Could not read file: {}. Please choose another file'.format(studentexport)
+                print('Could not read file: {}. Please choose another file'.format(studentexport))
                 logger.error('file is unreadable: {}'.format(studentexport))
                 studentexport = None
                 
@@ -1190,8 +1249,8 @@ def main():
                     studentexport_csv.append(row)
         except (OSError, IOError) as e:
             logging.warn('error reading file: {}\n{}'.format(studentexport,e))
-            print 'Could not read file: {}'.format(studentexport)
-            print 'please try a different file or download a new student.export file before trying again'
+            print('Could not read file: {}'.format(studentexport))
+            print('please try a different file or download a new student.export file before trying again')
             # give user a chance to try again
             studentexport = None
             continue
@@ -1203,10 +1262,10 @@ def main():
     
         if not headerMap or (len(headerMap['headers']) != len(expected_headers)):
             logging.warn('cannot continue without valid header map')
-            print('file: {} appears to not contain the expected header row (in any order): {}'.format(studentexport, expected_headers))
+            print(('file: {} appears to not contain the expected header row (in any order): {}'.format(studentexport, expected_headers)))
             if headerMap['missingheaders']:
-                print('your file appears to be missing the field(s): {}'.format(headerMap['missingheaders']))
-            print 'please try a different file or download a new student.export file before trying again'
+                print(('your file appears to be missing the field(s): {}'.format(headerMap['missingheaders'])))
+            print('please try a different file or download a new student.export file before trying again')
 #             doExit(testing=testing)
             studentexport = None
             continue
@@ -1215,15 +1274,15 @@ def main():
         
         # config variables to print to screen for user:
         config_print = ['useremail', 'teamdrivename', 'foldername']
-        print '\n*** Curent Configuration to Use: ***'
+        print('\n*** Curent Configuration to Use: ***')
         for section in myConfig.sections():
             for option in myConfig.options(section):
                 if option in config_print:
-                    print '{} = {}'.format(option, myConfig.get(section, option))
+                    print('{} = {}'.format(option, myConfig.get(section, option)))
                     
-        print 'studentexport = {}'.format(studentexport)
+        print('studentexport = {}'.format(studentexport))
 
-        print '\nWould you like to proceed with the configuration above?'
+        print('\nWould you like to proceed with the configuration above?')
         choices = {'Yes - Proceed with creating folders': (True, False), 'No - Reconfigure my settings': (False, True), 'Quit': True} 
         
         myChoice = prompts.prompt_for_choice(sorted(choices.keys()), padding=True)
@@ -1253,11 +1312,11 @@ def main():
 
             if len(failures) > 0:
                 logger.warn('{} students not processed due to previous errors'.format(len(failures)))
-                print ('{} students were not processed due to errors. Please run this batch again. Only missing folders will be created.'.format(len(failures)))
+                print(('{} students were not processed due to errors. Please run this batch again. Only missing folders will be created.'.format(len(failures))))
                 print ('The following students associated with the student numbers below had problems:')
-                print failures
+                print(failures)
                 print ('Please run this program again with the same student list. Only missing folders will be created.')
-                print ('If errors persist, please check the logs: {}'.format(log_files))
+                print(('If errors persist, please check the logs: {}'.format(log_files)))
 
             # add the time and date to the filename
             studentCSVoutput_path = studentCSVoutput_path.format(datetime.datetime.now()) 
@@ -1266,17 +1325,19 @@ def main():
                             studentFolders=studentFolders):
                 logger.error('failed to write TSV file: {}'.format(studentCSVoutput_path))
                 print ('Writing PowerSchool TSV ouptut failed. Please run this program again.')
-                print ('If this error persists please check the logs: {}'.format(log_files))
+                print(('If this error persists please check the logs: {}'.format(log_files)))
             else:
-                print ('Completed! Please send the TSV output file ({}) to the PowerSchool Administrator'.format(studentCSVoutput_path))
+                print(('Completed! Please send the TSV output file ({}) to the PowerSchool Administrator'.format(studentCSVoutput_path)))
 
                 # get input from the user to hold the window open when run from Finder
             if prompts.prompt_for_confirmation(question='Process another file?'):
                 proceed = False
                 studentexport = False
             else:
-                print 'exiting'
+                print('exiting')
                 break
+
+
 
 
 # In[48]:
@@ -1284,4 +1345,5 @@ def main():
 
 if __name__=='__main__':
     main()
+
 

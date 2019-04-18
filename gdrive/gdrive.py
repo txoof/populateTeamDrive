@@ -1,11 +1,40 @@
 #!/usr/bin/env ipython
-
+#!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+
+# In[13]:
+
+
+#get_ipython().magic(u'load_ext autoreload')
+#get_ipython().magic(u'autoreload 2')
+
+
+
+
+# In[14]:
+
+
+#get_ipython().magic(u'alias nbconvert nbconvert gdrive.ipynb')
+
+
+
+
+# In[3]:
+
+
+#get_ipython().magic(u'nbconvert')
+
+
+
+
+# In[20]:
+
 
 import logging
 import oauth2client
+# import google_auth_oauthlib
+# import google_auth_httplib2
 import httplib2
 import re
 import time
@@ -17,7 +46,10 @@ from apiclient import errors
 
 
 
-# In[ ]:
+
+
+# In[21]:
+
 
 class GDriveError(Exception):
     pass
@@ -26,7 +58,10 @@ class NetworkError(RuntimeError):
     pass
 
 
-# In[ ]:
+
+
+# In[22]:
+
 
 def retryer(max_retries=10, timeout=2):
     '''
@@ -57,7 +92,10 @@ def retryer(max_retries=10, timeout=2):
     return decorator
 
 
-# In[ ]:
+
+
+# In[23]:
+
 
 # google documentation here:
 # https://developers.google.com/apis-explorer/#p/
@@ -118,7 +156,7 @@ class googledrive():
         print('supported mime types:')
         for key in self.mimeTypes:
             #print('%10s: %s' % (key, self.mimeTypes[key]))
-            print('{:8} {val}'.format(key+':', val=self.mimeTypes[key]))
+            print(('{:8} {val}'.format(key+':', val=self.mimeTypes[key])))
     
 
     def _sanitizeFields(self, fields):
@@ -279,7 +317,7 @@ class googledrive():
         self.logger.debug('apicall: files().list({})'.format(apiString))
         
         if not quiet:
-            print apiString
+            print(apiString)
         
         try:
             # build a query with "and" statements
@@ -319,7 +357,7 @@ class googledrive():
         try:
             result = self.search(*args, **kwargs)
             for eachFile in result.get('files', []):
-                print('name: {f[name]}, ID:{f[id]}, mimeType:{f[mimeType]}'.format(f=eachFile))
+                print(('name: {f[name]}, ID:{f[id]}, mimeType:{f[mimeType]}'.format(f=eachFile)))
             
         except GDriveError as e:
             self.logger.error(e)
@@ -460,13 +498,16 @@ class googledrive():
 
 
 
-# In[ ]:
+
+# In[24]:
+
 
 # # create an instance for testing
 # from auth import *
 # logger = logging.getLogger(__name__)
 # logging.getLogger().setLevel(logging.DEBUG)
-# credential_store = "/tmp/"
+# credential_store = "./"
 # credentials = getCredentials(credential_store)
 # myDrive = googledrive(credentials)
+
 
