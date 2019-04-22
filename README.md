@@ -114,7 +114,8 @@ Required python modules for building a single package distribution
     - `$ pip install -U pip`
     - `$ pip install virtualenv`
     - `$ pip install virtualenvwrapper`
-    - Allow pip to only work in a virtual env: `$ echo export PIP_REQUIRE_VIRTUALENV=true > ~/.bash_profile`
+    - Allow pip to only work in a virtual env: `$ echo export PIP_REQUIRE_VIRTUALENV=true > 
+    /.bash_profile`
  #### Create a virtual environment
  * `$ mkvirtualenv python2.7`
  * ` pip install pyinstaller humanfriendly httplib2 google_api_python_client progressbar`
@@ -209,7 +210,7 @@ Configuration
 -------------
 The first time the program is run (or if the configuration file is missing) it will attempt to configure its self. During the OAuth authentication flow, the user will be asked to approve the application. It is important that the user that has access to the Team Drive folder that will contain the portfolio folders. 
 
-Configuration is maintained by ~/.config/portfolioCreator/portfolioCreator.ini using the typical 'ini' format. The configuration will be generated the first time the application is run.
+Configuration is maintained by ```~/.config/portfolioCreator/portfolioCreator.ini``` using the typical 'ini' format. The configuration will be generated the first time the application is run.
 The configuration can (and should) be updated during the execution of the program, but can also be managed here
 ```
 [Main] # main section - this MUST be included
@@ -241,4 +242,4 @@ The program attempts to recover from most errors and continue creating folders. 
 
 Should the program encounter an irrecoverable error and crashes, the student.export.text file can be run again without consequence. Should this problem persist, change the loglevel to DEBUG either through the configuration file (see above), or change the loglevel during the runtime configuration.
 
-Logs are recorded in ~/portfolioCreator_errors.log and are very helpful for debugging problems.
+Logs are recorded in ```~/portfolioCreator_errors.log``` and are very helpful for debugging problems.
