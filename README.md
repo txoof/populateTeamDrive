@@ -24,7 +24,7 @@ The portfolio creator script creates an empty set of folders for students on Goo
 
 Installation Instructions
 -------------------------
-[Build](#building) or [download[(https://drive.google.com/drive/folders/1pM4oF1QZ06STx37CC906lnXMhU-SWgY4) the executable and move it to the Applications folder or any other folder on your computer.
+[Build](#building) or [download](https://drive.google.com/drive/folders/1pM4oF1QZ06STx37CC906lnXMhU-SWgY4) the executable and move it to the Applications folder or any other folder on your computer.
 
 Usage Instructions
 -------------------
