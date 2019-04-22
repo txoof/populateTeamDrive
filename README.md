@@ -2,6 +2,7 @@ portfolioCreator
 ======
 The portfolio creator script creates an empty set of folders for students on Google Team Drive.
 
+# Table of contents
   * [Usage Instructions (creating new cummulative/portfolio folders)](#usage-instructions)
     * [Prepare Student\.Export\.text file](#prepare-studentexporttext-file)
       * [Required Quick Export Fields (any additional fields are ignored):](#required-quick-export-fields-any-additional-fields-are-ignored)
@@ -28,6 +29,9 @@ Installation Instructions
 
 Usage Instructions
 -------------------
+
+[(Back to top)](#table-of-contents)
+
 ### Prepare Student.Export.text file
 Locate any new students in PowerSchool and run a quick export. Save the student.export.text file into either the Downloads or Desktop folder. 
 The following query can be used to extract recently added students:
@@ -97,6 +101,9 @@ See BA for instructions
 
 Building
 --------
+
+[(Back to top)](#table-of-contents)
+
 ### Requirements
 Required python modules for building a single package distribution 
 - python 2.7.x
@@ -159,6 +166,9 @@ $ pyinstaller --clean portfolioCreator.spec
 
 Specifications
 --------------
+
+[(Back to top)](#table-of-contents)
+
 The script creates portfolio folders using in the following format on a google Team Drive in the following format from Preschool through Grade 12 (inclusive):
 ```
 [Google Team Drive]
@@ -208,6 +218,9 @@ The gradefolders.txt file must have one single folder title per line. Trailing w
 ```
 Configuration
 -------------
+
+[(Back to top)](#table-of-contents)
+
 The first time the program is run (or if the configuration file is missing) it will attempt to configure its self. During the OAuth authentication flow, the user will be asked to approve the application. It is important that the user that has access to the Team Drive folder that will contain the portfolio folders. 
 
 Configuration is maintained by ```~/.config/portfolioCreator/portfolioCreator.ini``` using the typical 'ini' format. The configuration will be generated the first time the application is run.
@@ -238,6 +251,9 @@ gradefolders = /path/to/alternative/gradefolders.txt
 
 Resolving Issues
 ----------------
+
+[(Back to top)](#table-of-contents)
+
 The program attempts to recover from most errors and continue creating folders. Should it encounter a problem creating student folders, the student will be skipped and the user is notified. In this case, the student.export.text can be run again. Only missing folders are created. The program will not create duplicate folders on Team Drive.
 
 Should the program encounter an irrecoverable error and crashes, the student.export.text file can be run again without consequence. Should this problem persist, change the loglevel to DEBUG either through the configuration file (see above), or change the loglevel during the runtime configuration.
