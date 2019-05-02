@@ -13,6 +13,7 @@ google-auth-httplib2 = "*"
 google-auth-oauthlib = "*"
 humanfriendly = "*"
 progressbar = "*"
+pyinstaller = "*"
 
 [requires]
 python_version = "3.7"
