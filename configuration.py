@@ -3,7 +3,7 @@
 # coding: utf-8
 
 
-# In[2]:
+# In[1]:
 
 
 #get_ipython().magic(u'alias nbconvert nbconvert configuration.ipynb')
@@ -11,7 +11,7 @@
 
 
 
-# In[7]:
+# In[2]:
 
 
 #get_ipython().magic(u'nbconvert')
@@ -55,7 +55,8 @@ def create_config(path, configuration):
   
     try:
         logger.info('writing configuration file: {}'.format(cfgfile))
-        with open(cfgfile, 'wb') as config_file:
+#         with open(cfgfile, 'wb') as config_file:
+        with open(cfgfile, 'w') as config_file:
             configuration.write(config_file)
     except Exception as e:
         logger.error(e)
