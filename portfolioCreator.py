@@ -3,7 +3,7 @@
 # coding: utf-8
 
 
-# In[1]:
+# In[5]:
 
 
 #get_ipython().magic(u'load_ext autoreload')
@@ -14,7 +14,7 @@
 
 
 
-# In[2]:
+# In[41]:
 
 
 #get_ipython().magic(u'nbconvert')
@@ -22,7 +22,7 @@
 
 
 
-# In[ ]:
+# In[38]:
 
 
 import logging
@@ -38,6 +38,7 @@ from glob import glob
 import csv
 import textwrap
 import configuration
+from pathlib import Path
 from gdrive.auth import getCredentials
 from gdrive.gdrive import googledrive, GDriveError
 from humanfriendly import prompts
@@ -46,7 +47,7 @@ from progressbar import ProgressBar, Bar, Counter, ETA,     AdaptiveETA, Percent
 
 
 
-# In[ ]:
+# In[8]:
 
 
 def resource_path(relative_path):
@@ -62,7 +63,7 @@ def resource_path(relative_path):
 
 
 
-# In[ ]:
+# In[9]:
 
 
 def setup_logging(
@@ -119,7 +120,7 @@ def setup_logging(
 
 
 
-# In[ ]:
+# In[10]:
 
 
 def fileSearch(path = None, search = None):
@@ -148,7 +149,7 @@ def fileSearch(path = None, search = None):
 
 
 
-# In[ ]:
+# In[11]:
 
 
 def getConfiguration(cfgfile):
@@ -199,7 +200,7 @@ def getConfiguration(cfgfile):
 
 
 
-# In[ ]:
+# In[12]:
 
 
 def getTeamDrive(myDrive):
@@ -224,7 +225,7 @@ def getTeamDrive(myDrive):
     
     teamdrive = None
     
-    print('Please seledct a Team Drive for storing Portfolio folders from the list below:')
+    print('Seledct a Team Drive for storing Portfolio folders from the list below:')
     try:
         teamdrive_name = prompts.prompt_for_choice(choices=sorted(teamdrives_writeable.keys()), default=None)
         teamdrive=teamdrives_writeable[teamdrive_name]
@@ -236,7 +237,7 @@ def getTeamDrive(myDrive):
 
 
 
-# In[ ]:
+# In[13]:
 
 
 def getPortfolioFolder(myDrive, teamdriveID):
@@ -253,7 +254,7 @@ def getPortfolioFolder(myDrive, teamdriveID):
     attempt = 5
     while (len(foldersearch) <= 0) and (attempt > 0):
         attempt -= 1
-        foldersearch = prompts.prompt_for_input(question='Please enter a portion of the portfolio folder name (case insensitive): ',
+        foldersearch = prompts.prompt_for_input(question='Enter a portion of the portfolio folder name (case insensitive): ',
                                                 default=None, strip=True)
         if len(foldersearch) <= 0:
             print(('Nothing entered. {} attempts remain.'.format(attempt)))
@@ -261,7 +262,7 @@ def getPortfolioFolder(myDrive, teamdriveID):
         searchresult = myDrive.search(name=foldersearch, fuzzy=True, teamdrive = teamdriveID, mimeType='folder')
         if len(searchresult['files']) <= 0:
             print(('No folders contained "{}"'.format(foldersearch)))
-            print('Please try entering only part of the folder name')
+            print('Try entering only part of the folder name')
             foldersearch = ''
             
     
@@ -275,7 +276,7 @@ def getPortfolioFolder(myDrive, teamdriveID):
     for each in searchresult['files']:
         foldernames.append(each['name'])
     
-    print('Please select the folder that contains the Portfolio Folders')
+    print('Select the folder that contains the Portfolio Folders')
     try:
         foldername = prompts.prompt_for_choice(choices=foldernames)
     except prompts.TooManyInvalidReplies as e:
@@ -287,7 +288,7 @@ def getPortfolioFolder(myDrive, teamdriveID):
 
 
 
-# In[ ]:
+# In[29]:
 
 
 def getPathfromList(list_path=['~/'], message='Choose from the paths below', default=None):
@@ -324,7 +325,7 @@ def getPathfromList(list_path=['~/'], message='Choose from the paths below', def
         while not searchPath and attempt > 0:
             logger.debug('attempts remaining: {}'.format(attempt))
             attempt -= 1
-            searchPath = prompts.prompt_for_input('Please type the complete path to use: ')
+            searchPath = prompts.prompt_for_input('Type the complete path to use: ')
             logger.debug('searchPath = {}'.format(searchPath))         
     
     if len(searchPath) < 1:
@@ -334,7 +335,7 @@ def getPathfromList(list_path=['~/'], message='Choose from the paths below', def
 
 
 
-# In[ ]:
+# In[15]:
 
 
 def getFiles(path='~/', pattern='.*', ignorecase=True):
@@ -369,11 +370,40 @@ def getFiles(path='~/', pattern='.*', ignorecase=True):
 
 
 
-# In[ ]:
+# In[31]:
+
+
+# def chooseFile(path='~/', pattern='.*', ignorecase=True, 
+#                message='Choose a file from the list\n**Files are sorted newest at bottom**'):
+#     '''
+#     menu interaction for choose a file in the specified path from the file glob created using a regex pattern
+#     accepts:
+#         path (string) - path to search
+#         pattern (string) - regular expression to search for in file names
+#         ignorecase (bool) - defaults to True, ignore file name case
+#         message(string) - message to show
+#     returns:
+#         selection (string) - selected file'''
+    
+#     logger = logging.getLogger(__name__)
+#     filelist = getFiles(path=path, pattern=pattern, ignorecase=ignorecase)
+#     if len(filelist) >= 1:
+#         logger.debug('filelist: {}'.format(filelist))
+#         print(message)
+#         selection = prompts.prompt_for_choice(choices=filelist)
+#         return(selection)
+#     else:
+#         logger.warning('no files matching pattern ({}) at location: {}'.format(pattern, path))
+#         return(None)
+
+
+
+
+# In[36]:
 
 
 def chooseFile(path='~/', pattern='.*', ignorecase=True, 
-               message='Please choose a file from the list\n**Files are sorted newest at bottom**'):
+               message='Choose a file from the list\n**Files are sorted newest at bottom**'):
     '''
     menu interaction for choose a file in the specified path from the file glob created using a regex pattern
     accepts:
@@ -385,12 +415,18 @@ def chooseFile(path='~/', pattern='.*', ignorecase=True,
         selection (string) - selected file'''
     
     logger = logging.getLogger(__name__)
-    filelist = getFiles(path=path, pattern=pattern, ignorecase=ignorecase)
-    if len(filelist) >= 1:
-        logger.debug('filelist: {}'.format(filelist))
+    rawFileList = getFiles(path=path, pattern=pattern, ignorecase=ignorecase)
+
+    fileDict = {}
+    for f in rawFileList:
+        fileDict[Path(f).name] = Path(f)    
+    
+    
+    if len(fileDict) >= 1:
+        logger.debug('filelist: {}'.format(rawFileList))
         print(message)
-        selection = prompts.prompt_for_choice(choices=filelist)
-        return(selection)
+        selection = prompts.prompt_for_choice(choices=fileDict, padding=True)
+        return(fileDict[selection])
     else:
         logger.warning('no files matching pattern ({}) at location: {}'.format(pattern, path))
         return(None)
@@ -398,7 +434,7 @@ def chooseFile(path='~/', pattern='.*', ignorecase=True,
 
 
 
-# In[ ]:
+# In[17]:
 
 
 def fileToList(inputfile, stripWhitespace=True):
@@ -422,7 +458,7 @@ def fileToList(inputfile, stripWhitespace=True):
 
 
 
-# In[ ]:
+# In[18]:
 
 
 def checkFolder(folderID, myDrive):
@@ -443,7 +479,7 @@ def checkFolder(folderID, myDrive):
         props = myDrive.getprops(folderID, 'capabilities, mimeType, name')
     except GDriveError as e:
         logger.error('failed to get properties for {}; {}'.format(folderID, e))
-        logger.error('please try again. if this error persists, please try reconfiguring the folder')
+        logger.error('try again. if this error persists, try reconfiguring the folder')
         logger.error('cannot continue; exiting')
     
     try:
@@ -466,7 +502,7 @@ def checkFolder(folderID, myDrive):
 
 
 
-# In[ ]:
+# In[19]:
 
 
 def mapHeaders(file_csv, expected_headers=[]):
@@ -509,7 +545,7 @@ def mapHeaders(file_csv, expected_headers=[]):
 
 
 
-# In[ ]:
+# In[20]:
 
 
 # mylogger = logging.getLogger(__name__)
@@ -519,7 +555,7 @@ def mapHeaders(file_csv, expected_headers=[]):
 
 
 
-# In[ ]:
+# In[21]:
 
 
 def doExit(exit_level=0, testing=False):
@@ -531,7 +567,7 @@ def doExit(exit_level=0, testing=False):
 
 
 
-# In[ ]:
+# In[22]:
 
 
 def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True):
@@ -627,7 +663,7 @@ def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True
 
 
 
-# In[ ]:
+# In[23]:
 
 
 # studentexport = '/Users/aciuffo/Downloads/SHORT student.export (4).text'
@@ -653,7 +689,7 @@ def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True
 
 
 
-# In[ ]:
+# In[24]:
 
 
 def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv, gradefolder_list, headerMap):
@@ -861,7 +897,7 @@ def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv
 
 
 
-# In[ ]:
+# In[25]:
 
 
 def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv'):
@@ -921,7 +957,7 @@ def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv')
 
 
 
-# In[ ]:
+# In[26]:
 
 
 def main():
@@ -935,6 +971,9 @@ def main():
     logger = logging.getLogger(__name__)
     loggingConfig = resource_path('resources/logging.json')
     setup_logging(default_config=loggingConfig,default_level=logging.ERROR, output_path='~/')
+    
+    # set the terminal size to 50x90 characters
+    print("\x1b[8;50;90t")
     
     # log level names
     levelNames = ['DEBUG', 'INFO', 'WARNING']
@@ -1088,7 +1127,7 @@ def main():
                         logger.error(e)
                         logger.error('could not remove credential store at: {}'.format(credential_store))
                         print(('Error removing stored credentials in folder {}'.format(credential_store)))
-                        print(('Please try running this program again. If this message reappears check the logs: {}'.format(log_files)))
+                        print(('Try running this program again. If this message reappears check the logs: {}'.format(log_files)))
                         doExit(testing=testing)
 
         # get or reset credentials
@@ -1106,7 +1145,7 @@ def main():
             myDrive = googledrive(credentials)
         except Exception as e:
             logger.error('Could not set up google drive connection: {}'.format(e))
-            print('Could not setup google drive connection. Please run this program again.')
+            print('Could not setup google drive connection. Run this program again.')
             print(('If this error persists, please check the logs: {}'.format(log_files)))
             print('cannot continue')
             doExit(testing=testing)
@@ -1118,7 +1157,7 @@ def main():
             except Exception as e:
                 logging.error('Error retreving useremail address from drive configuration')
                 print('Error fetching configuration information.')
-                print('Please run the program again')
+                print('Run the program again')
                 print(('If this error persists, please check the logs: {}'.format(log_files)))
                 doExit(testing=testing)
             myConfig.set('Main', 'useremail', useremail)
@@ -1225,7 +1264,7 @@ def main():
             if not studentexport:
                 # invoke menu for prompting user to choose a path to the studentexport file
                 studentexport_path = getPathfromList(studentexport_list, 
-                                                     message='Please choose which folder contains the Student Export File.',
+                                                     message='Choose which folder contains the Student Export File.',
                                                      default=studentexport_list[0])
 
 
@@ -1233,11 +1272,11 @@ def main():
             # try again if nothing is returned
             if not studentexport:
                 print(('No student exports files found in folder: {}'.format(studentexport_path)))
-                print('please place a student export file in that folder or try an alternative location')
+                print('Place a student export file in that folder or try an alternative location')
                 continue
             logger.debug('student export file chosen: {}'.format(studentexport))
             if not os.access(studentexport, os.R_OK):
-                print(('Could not read file: {}. Please choose another file'.format(studentexport)))
+                print(('Could not read file: {}. Choose another file'.format(studentexport)))
                 logger.error('file is unreadable: {}'.format(studentexport))
                 studentexport = None
                 
@@ -1260,7 +1299,7 @@ def main():
         except (OSError, IOError) as e:
             logging.warning('error reading file: {}\n{}'.format(studentexport,e))
             print(('Could not read file: {}'.format(studentexport)))
-            print('please try a different file or download a new student.export file before trying again')
+            print('Try a different file or download a new student.export file before trying again')
             # give user a chance to try again
             studentexport = None
             continue
@@ -1275,7 +1314,7 @@ def main():
             print(('file: {} appears to not contain the expected header row (in any order): {}'.format(studentexport, expected_headers)))
             if headerMap['missingheaders']:
                 print(('your file appears to be missing the field(s): {}'.format(headerMap['missingheaders'])))
-            print('please try a different file or download a new student.export file before trying again')
+            print('Try a different file or download a new student.export file before trying again')
 #             doExit(testing=testing)
             studentexport = None
             continue
@@ -1322,10 +1361,10 @@ def main():
 
             if len(failures) > 0:
                 logger.warning('{} students not processed due to previous errors'.format(len(failures)))
-                print(('{} students were not processed due to errors. Please run this batch again. Only missing folders will be created.'.format(len(failures))))
+                print(('{} students were not processed due to errors. Run this batch again. Only missing folders will be created.'.format(len(failures))))
                 print ('The following students associated with the student numbers below had problems:')
                 print(failures)
-                print ('Please run this program again with the same student list. Only missing folders will be created.')
+                print ('Run this program again with the same student list. Only missing folders will be created.')
                 print(('If errors persist, please check the logs: {}'.format(log_files)))
 
             # add the time and date to the filename
@@ -1334,10 +1373,10 @@ def main():
             if not writeCSV(output_path=studentCSVoutput_path,
                             studentFolders=studentFolders):
                 logger.error('failed to write TSV file: {}'.format(studentCSVoutput_path))
-                print ('Writing PowerSchool TSV ouptut failed. Please run this program again.')
+                print ('Writing PowerSchool TSV ouptut failed. Run this program again.')
                 print(('If this error persists please check the logs: {}'.format(log_files)))
             else:
-                print(('Completed! Please send the TSV output file ({}) to the PowerSchool Administrator'.format(studentCSVoutput_path)))
+                print(('Completed! Send the TSV output file ({}) to the PowerSchool Administrator'.format(studentCSVoutput_path)))
 
                 # get input from the user to hold the window open when run from Finder
             if prompts.prompt_for_confirmation(question='Process another file?'):
@@ -1350,7 +1389,7 @@ def main():
 
 
 
-# In[ ]:
+# In[40]:
 
 
 if __name__=='__main__':
