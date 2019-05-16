@@ -20,7 +20,7 @@
 
 
 
-# In[3]:
+# In[26]:
 
 
 #get_ipython().magic(u'nbconvert')
@@ -33,14 +33,11 @@
 
 import logging
 import oauth2client
-# import google_auth_oauthlib
-# import google_auth_httplib2
 import httplib2
 import re
 import time
 from ssl import SSLError
 from functools import wraps
-# from gdrive.auth import getCredentials
 from apiclient import discovery
 from apiclient import errors 
 
