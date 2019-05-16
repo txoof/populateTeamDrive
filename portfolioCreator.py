@@ -3,7 +3,7 @@
 # coding: utf-8
 
 
-# In[1]:
+# In[2]:
 
 
 #get_ipython().magic(u'load_ext autoreload')
@@ -14,7 +14,7 @@
 
 
 
-# In[59]:
+# In[3]:
 
 
 #get_ipython().magic(u'nbconvert')
@@ -22,7 +22,7 @@
 
 
 
-# In[3]:
+# In[4]:
 
 
 import logging
@@ -46,7 +46,7 @@ from progressbar import ProgressBar, Bar, Counter, ETA,     AdaptiveETA, Percent
 
 
 
-# In[4]:
+# In[5]:
 
 
 def resource_path(relative_path):
@@ -62,7 +62,7 @@ def resource_path(relative_path):
 
 
 
-# In[5]:
+# In[6]:
 
 
 def setup_logging(
@@ -119,7 +119,7 @@ def setup_logging(
 
 
 
-# In[6]:
+# In[7]:
 
 
 def fileSearch(path = None, search = None):
@@ -148,7 +148,7 @@ def fileSearch(path = None, search = None):
 
 
 
-# In[7]:
+# In[8]:
 
 
 def getConfiguration(cfgfile):
@@ -199,7 +199,7 @@ def getConfiguration(cfgfile):
 
 
 
-# In[8]:
+# In[9]:
 
 
 def getTeamDrive(myDrive):
@@ -236,7 +236,7 @@ def getTeamDrive(myDrive):
 
 
 
-# In[9]:
+# In[32]:
 
 
 def getPortfolioFolder(myDrive, teamdriveID):
@@ -266,7 +266,7 @@ def getPortfolioFolder(myDrive, teamdriveID):
             
     
     
-    if foldersearch <= 0:
+    if len(foldersearch) <= 0:
         logger.warning('user entered 0 length string for folder search')
         return(None)
     
@@ -287,7 +287,7 @@ def getPortfolioFolder(myDrive, teamdriveID):
 
 
 
-# In[10]:
+# In[11]:
 
 
 def getPathfromList(list_path=['~/'], message='Choose from the paths below', default=None):
@@ -334,7 +334,7 @@ def getPathfromList(list_path=['~/'], message='Choose from the paths below', def
 
 
 
-# In[11]:
+# In[12]:
 
 
 def getFiles(path='~/', pattern='.*', ignorecase=True):
@@ -369,7 +369,7 @@ def getFiles(path='~/', pattern='.*', ignorecase=True):
 
 
 
-# In[12]:
+# In[13]:
 
 
 def chooseFile(path='~/', pattern='.*', ignorecase=True, 
@@ -398,10 +398,13 @@ def chooseFile(path='~/', pattern='.*', ignorecase=True,
 
 
 
-# In[13]:
+# In[14]:
 
 
 def fileToList(inputfile, stripWhitespace=True):
+    '''
+    Creates a list from a text file and optionally strips out whitespace
+    '''
     logger = logging.getLogger(__name__)
     logger.debug('inputfile = {}'.format(inputfile))
 #     super elegant solution as seen below 
@@ -419,7 +422,7 @@ def fileToList(inputfile, stripWhitespace=True):
 
 
 
-# In[14]:
+# In[15]:
 
 
 def checkFolder(folderID, myDrive):
@@ -463,7 +466,7 @@ def checkFolder(folderID, myDrive):
 
 
 
-# In[15]:
+# In[16]:
 
 
 def mapHeaders(file_csv, expected_headers=[]):
@@ -506,7 +509,7 @@ def mapHeaders(file_csv, expected_headers=[]):
 
 
 
-# In[16]:
+# In[17]:
 
 
 # mylogger = logging.getLogger(__name__)
@@ -516,7 +519,7 @@ def mapHeaders(file_csv, expected_headers=[]):
 
 
 
-# In[17]:
+# In[18]:
 
 
 def doExit(exit_level=0, testing=False):
@@ -528,7 +531,7 @@ def doExit(exit_level=0, testing=False):
 
 
 
-# In[18]:
+# In[19]:
 
 
 def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True):
@@ -650,7 +653,7 @@ def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True
 
 
 
-# In[21]:
+# In[20]:
 
 
 def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv, gradefolder_list, headerMap):
@@ -858,7 +861,7 @@ def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv
 
 
 
-# In[22]:
+# In[35]:
 
 
 def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv'):
@@ -888,7 +891,8 @@ def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv')
     
     logger.debug('Writing rows:')
     try:
-        with open(output_path, 'wb') as f:
+#         with open(output_path, 'wb') as f:
+        with open(output_path, 'w') as f:
             writer = csv.writer(f,
                     quoting = csv.QUOTE_NONE,
                     delimiter='\t')
@@ -904,7 +908,7 @@ def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv')
 
 
 
-# In[23]:
+# In[22]:
 
 
 # import csv
@@ -917,7 +921,7 @@ def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv')
 
 
 
-# In[57]:
+# In[36]:
 
 
 def main():
@@ -1060,7 +1064,8 @@ def main():
             print(('Log level is set to only show: {}'.format(loglevel)))
             if prompts.prompt_for_confirmation(question='Change log level?', default=False):
                 loglevel_list = []
-                for k, v in sorted(levelNames):
+#                 for k, v in sorted(levelNames):
+                for v in sorted(levelNames):
                     if isinstance(v, str):
                         loglevel_list.append(v)
                 
@@ -1248,7 +1253,7 @@ def main():
         # read the studentexport text file into a csv object
         studentexport_csv = []
         try: 
-            with open(studentexport, 'rU') as csvfile:
+            with open(studentexport, 'r') as csvfile: # changed from 'rU' to 'r' 
                 csvreader = csv.reader(csvfile)
                 for row in csvreader:
                     studentexport_csv.append(row)
@@ -1345,7 +1350,7 @@ def main():
 
 
 
-# In[58]:
+# In[37]:
 
 
 if __name__=='__main__':
