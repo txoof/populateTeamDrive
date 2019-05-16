@@ -3,7 +3,7 @@
 # coding: utf-8
 
 
-# In[2]:
+# In[1]:
 
 
 #get_ipython().magic(u'load_ext autoreload')
@@ -14,7 +14,7 @@
 
 
 
-# In[3]:
+# In[2]:
 
 
 #get_ipython().magic(u'nbconvert')
@@ -22,7 +22,7 @@
 
 
 
-# In[4]:
+# In[ ]:
 
 
 import logging
@@ -46,7 +46,7 @@ from progressbar import ProgressBar, Bar, Counter, ETA,     AdaptiveETA, Percent
 
 
 
-# In[5]:
+# In[ ]:
 
 
 def resource_path(relative_path):
@@ -62,7 +62,7 @@ def resource_path(relative_path):
 
 
 
-# In[6]:
+# In[ ]:
 
 
 def setup_logging(
@@ -119,7 +119,7 @@ def setup_logging(
 
 
 
-# In[7]:
+# In[ ]:
 
 
 def fileSearch(path = None, search = None):
@@ -148,7 +148,7 @@ def fileSearch(path = None, search = None):
 
 
 
-# In[8]:
+# In[ ]:
 
 
 def getConfiguration(cfgfile):
@@ -199,7 +199,7 @@ def getConfiguration(cfgfile):
 
 
 
-# In[9]:
+# In[ ]:
 
 
 def getTeamDrive(myDrive):
@@ -236,7 +236,7 @@ def getTeamDrive(myDrive):
 
 
 
-# In[32]:
+# In[ ]:
 
 
 def getPortfolioFolder(myDrive, teamdriveID):
@@ -287,7 +287,7 @@ def getPortfolioFolder(myDrive, teamdriveID):
 
 
 
-# In[11]:
+# In[ ]:
 
 
 def getPathfromList(list_path=['~/'], message='Choose from the paths below', default=None):
@@ -334,7 +334,7 @@ def getPathfromList(list_path=['~/'], message='Choose from the paths below', def
 
 
 
-# In[12]:
+# In[ ]:
 
 
 def getFiles(path='~/', pattern='.*', ignorecase=True):
@@ -369,7 +369,7 @@ def getFiles(path='~/', pattern='.*', ignorecase=True):
 
 
 
-# In[13]:
+# In[ ]:
 
 
 def chooseFile(path='~/', pattern='.*', ignorecase=True, 
@@ -398,7 +398,7 @@ def chooseFile(path='~/', pattern='.*', ignorecase=True,
 
 
 
-# In[14]:
+# In[ ]:
 
 
 def fileToList(inputfile, stripWhitespace=True):
@@ -422,7 +422,7 @@ def fileToList(inputfile, stripWhitespace=True):
 
 
 
-# In[15]:
+# In[ ]:
 
 
 def checkFolder(folderID, myDrive):
@@ -466,7 +466,7 @@ def checkFolder(folderID, myDrive):
 
 
 
-# In[16]:
+# In[ ]:
 
 
 def mapHeaders(file_csv, expected_headers=[]):
@@ -509,7 +509,7 @@ def mapHeaders(file_csv, expected_headers=[]):
 
 
 
-# In[17]:
+# In[ ]:
 
 
 # mylogger = logging.getLogger(__name__)
@@ -519,7 +519,7 @@ def mapHeaders(file_csv, expected_headers=[]):
 
 
 
-# In[18]:
+# In[ ]:
 
 
 def doExit(exit_level=0, testing=False):
@@ -531,7 +531,7 @@ def doExit(exit_level=0, testing=False):
 
 
 
-# In[19]:
+# In[ ]:
 
 
 def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True):
@@ -627,7 +627,7 @@ def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True
 
 
 
-# In[19]:
+# In[ ]:
 
 
 # studentexport = '/Users/aciuffo/Downloads/SHORT student.export (4).text'
@@ -641,7 +641,7 @@ def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True
 
 
 
-# In[20]:
+# In[ ]:
 
 
 # # studentexport_csv
@@ -653,7 +653,7 @@ def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True
 
 
 
-# In[20]:
+# In[ ]:
 
 
 def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv, gradefolder_list, headerMap):
@@ -861,7 +861,7 @@ def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv
 
 
 
-# In[35]:
+# In[ ]:
 
 
 def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv'):
@@ -908,7 +908,7 @@ def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv')
 
 
 
-# In[22]:
+# In[ ]:
 
 
 # import csv
@@ -921,11 +921,11 @@ def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv')
 
 
 
-# In[36]:
+# In[ ]:
 
 
 def main():
-    version = '00.10 - 2019.04.18'
+    version = '00.20 - 2019.05.16'
     appName = 'portfolioCreator'
 
     cfgfile = appName+'.ini'
@@ -1350,7 +1350,7 @@ def main():
 
 
 
-# In[37]:
+# In[ ]:
 
 
 if __name__=='__main__':
