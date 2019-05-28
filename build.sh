@@ -1,13 +1,8 @@
 #!/bin/bash
 APPNAME="portfolioCreator"
+DATESTR=`date +%F_%H.%M`
 
-# uneeded when running with pipenv
-#if [[ "$VIRTUAL_ENV" != "" ]] ; then
-#  ~/bin/nbconvert "$APPNAME".ipynb
+#pipenv run  pyinstaller --clean *.spec
+mv /Volumes/GoogleDrive/Team\ Drives/ASH\ Student\ Cumulative\ Folders/PortfolioCreator\ Application/*.zip /Volumes/GoogleDrive/Team\ Drives/ASH\ Student\ Cumulative\ Folders/PortfolioCreator\ Application/Old\ Versions
+zip -j /Volumes/GoogleDrive/Team\ Drives/ASH\ Student\ Cumulative\ Folders/PortfolioCreator\ Application/portfolioCreator_$DATESTR.zip ./dist/portfolioCreator
 
-pipenv run  pyinstaller --clean *.spec
-zip -j /Volumes/GoogleDrive/Team\ Drives/ES\ Student\ Cumulative\ Folders/PortfolioCreator\ Application/portfolioCreator.zip ./dist/portfolioCreator
-#  cp ./dist/portfolioCreator /Volumes/GoogleDrive/Team\ Drives/ES\ Student\ Cumulative\ Folders/PortfolioCreator\ Application/
-#else
-#  echo "This must be run from within a virtual environment with pyinstaller"
-#fi
