@@ -61,6 +61,10 @@ ClassOf
 
 ### Run the application
 Locate and run the portfolioCreator application by double clicking on the icon.
+The first time the application is run, OS X may show the following message:
+![Unidentified Developer] (./documentation/unidentified_developer.png "Unidentified Developer")
+Click the "Open" button to proceed. If any further error messages pop up, please contact IT Support.
+
 ![Welcome Screen](./documentation/WelcomeScreen.png "Welcome Screen")
 
 Use the keyboard to interact with the application by typing your choice and pressing the enter key (↩). Default choices are capitalized or marked as "default".  
