@@ -3,7 +3,7 @@
 # coding: utf-8
 
 
-# In[5]:
+# In[ ]:
 
 
 #get_ipython().magic(u'load_ext autoreload')
@@ -14,7 +14,7 @@
 
 
 
-# In[41]:
+# In[1]:
 
 
 #get_ipython().magic(u'nbconvert')
@@ -22,7 +22,17 @@
 
 
 
-# In[38]:
+# In[6]:
+
+
+myArray = [1, 4, 5, "cookie", ["dog", "cat", 'uranium']]
+for eachElement in myArray:
+    print(eachElement)
+
+
+
+
+# In[ ]:
 
 
 import logging
@@ -39,15 +49,14 @@ import csv
 import textwrap
 import configuration
 from pathlib import Path
-from gdrive.auth import getCredentials
-from gdrive.gdrive import googledrive, GDriveError
+d
 from humanfriendly import prompts
 from progressbar import ProgressBar, Bar, Counter, ETA,     AdaptiveETA, Percentage
 
 
 
 
-# In[8]:
+# In[ ]:
 
 
 def resource_path(relative_path):
@@ -63,7 +72,7 @@ def resource_path(relative_path):
 
 
 
-# In[9]:
+# In[ ]:
 
 
 def setup_logging(
@@ -120,7 +129,7 @@ def setup_logging(
 
 
 
-# In[10]:
+# In[ ]:
 
 
 def fileSearch(path = None, search = None):
@@ -149,7 +158,7 @@ def fileSearch(path = None, search = None):
 
 
 
-# In[11]:
+# In[2]:
 
 
 def getConfiguration(cfgfile):
@@ -200,7 +209,7 @@ def getConfiguration(cfgfile):
 
 
 
-# In[12]:
+# In[3]:
 
 
 def getTeamDrive(myDrive):
@@ -237,7 +246,7 @@ def getTeamDrive(myDrive):
 
 
 
-# In[13]:
+# In[ ]:
 
 
 def getPortfolioFolder(myDrive, teamdriveID):
@@ -288,7 +297,7 @@ def getPortfolioFolder(myDrive, teamdriveID):
 
 
 
-# In[29]:
+# In[ ]:
 
 
 def getPathfromList(list_path=['~/'], message='Choose from the paths below', default=None):
@@ -335,7 +344,7 @@ def getPathfromList(list_path=['~/'], message='Choose from the paths below', def
 
 
 
-# In[15]:
+# In[ ]:
 
 
 def getFiles(path='~/', pattern='.*', ignorecase=True):
@@ -370,7 +379,7 @@ def getFiles(path='~/', pattern='.*', ignorecase=True):
 
 
 
-# In[31]:
+# In[ ]:
 
 
 # def chooseFile(path='~/', pattern='.*', ignorecase=True, 
@@ -399,7 +408,7 @@ def getFiles(path='~/', pattern='.*', ignorecase=True):
 
 
 
-# In[36]:
+# In[ ]:
 
 
 def chooseFile(path='~/', pattern='.*', ignorecase=True, 
@@ -434,7 +443,7 @@ def chooseFile(path='~/', pattern='.*', ignorecase=True,
 
 
 
-# In[17]:
+# In[ ]:
 
 
 def fileToList(inputfile, stripWhitespace=True):
@@ -458,7 +467,7 @@ def fileToList(inputfile, stripWhitespace=True):
 
 
 
-# In[18]:
+# In[ ]:
 
 
 def checkFolder(folderID, myDrive):
@@ -502,7 +511,7 @@ def checkFolder(folderID, myDrive):
 
 
 
-# In[19]:
+# In[ ]:
 
 
 def mapHeaders(file_csv, expected_headers=[]):
@@ -545,7 +554,7 @@ def mapHeaders(file_csv, expected_headers=[]):
 
 
 
-# In[20]:
+# In[ ]:
 
 
 # mylogger = logging.getLogger(__name__)
@@ -555,7 +564,7 @@ def mapHeaders(file_csv, expected_headers=[]):
 
 
 
-# In[21]:
+# In[ ]:
 
 
 def doExit(exit_level=0, testing=False):
@@ -567,7 +576,7 @@ def doExit(exit_level=0, testing=False):
 
 
 
-# In[22]:
+# In[ ]:
 
 
 def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True):
@@ -663,33 +672,7 @@ def createFolders(myDrive, teamdrive, parentFolder, folderList, progressbar=True
 
 
 
-# In[23]:
-
-
-# studentexport = '/Users/aciuffo/Downloads/SHORT student.export (4).text'
-# studentexport_csv = []
-# with open(studentexport, 'rU') as csvfile:
-#     csvreader = csv.reader(csvfile)
-#     for row in csvreader:
-#         studentexport_csv.append(row)
-# studentexport_csv
-
-
-
-
 # In[ ]:
-
-
-# # studentexport_csv
-# headers = mapHeaders(studentexport_csv, ['LastFirst', 'Student_Number', 'ClassOf'])
-# # somelist[:] = [x for x in somelist if not determine(x)]
-# studentexport_csv[:] = [i for i in studentexport_csv if len(i) >= len(headers['headers'])]
-# print studentexport_csv
-
-
-
-
-# In[24]:
 
 
 def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv, gradefolder_list, headerMap):
@@ -897,7 +880,7 @@ def createPortfolioFolders(myDrive, parentFolder, teamdriveID, studentexport_csv
 
 
 
-# In[25]:
+# In[ ]:
 
 
 def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv'):
@@ -947,19 +930,6 @@ def writeCSV(studentFolders, csvHeaders=None, output_path='~/Desktop/myCSV.csv')
 # In[ ]:
 
 
-# import csv
-# my_list = [['a', 'dog'], ['b', 'cat']]
-# with open('./foo.txt', 'wb') as f:
-#     writer = csv.writer(f, quoting = csv.QUOTE_NONE, delimiter='\t')
-#     for each in my_list:
-#         writer.writerow(each)
-
-
-
-
-# In[26]:
-
-
 def main():
     version = '00.20 - 2019.05.16'
     appName = 'portfolioCreator'
@@ -982,7 +952,7 @@ def main():
     os.environ['HUMANFRIENDLY_HIGHLIGHT_COLOR'] = 'green'
 
     # set the terminal dimensions
-    sys.stdout.write("\x1b[8;{rows};{cols}t".format(rows=50, cols=100))
+#     sys.stdout.write("\x1b[8;{rows};{cols}t".format(rows=50, cols=100))
 
     
     logging.info('===Starting {} Log==='.format(appName))
@@ -1389,10 +1359,18 @@ def main():
 
 
 
-# In[40]:
+# In[ ]:
 
 
 if __name__=='__main__':
     main()
+
+
+
+
+# In[ ]:
+
+
+
 
 
