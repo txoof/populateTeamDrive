@@ -1,5 +1,9 @@
-portfolioCreator
+portfolioCreator DEPRICATED
 ======
+**DO NOT USE**
+
+This version is no longer maintained. Please see [portvolioCreator](https://github.com/txoof/portfolioCreator)
+
 The portfolio creator script creates an empty set of folders for students on Google Team Drive.
 
 # Table of contents
